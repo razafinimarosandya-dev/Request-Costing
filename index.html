@@ -743,7 +743,7 @@ input:checked + .slider:before {
                 <span>GarmentCost</span>
             </div>
             <ul class="nav-links">
-                <li><a href="#">Dashboard</a></li>
+                <li><a href="https://costing-home.vercel.app/">Dashboard</a></li>
                 <li><a href="#" class="active">Requests</a></li>
                 <li><a href="#">Inventory</a></li>
                 <li><a href="#">Reports</a></li>
@@ -1466,7 +1466,9 @@ if (isBrainstorm && finalAttendees.length === 0) {
         statusText.innerText = "Request sent successfully!";
         statusText.style.color = "#10b981";
         
-        setTimeout(() => window.location.reload(), 1500);
+       setTimeout(() => {
+    window.location.href = "https://awaiting-meet.vercel.app/";
+}, 1500);
 
     } catch (error) {
         isSubmitting = false;
