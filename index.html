@@ -14,726 +14,904 @@
 </head>
 <style>
     :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --primary-light: #eff6ff;
-    --bg-page: #f8fafc;
-    --bg-surface: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --border-focus: #93c5fd;
-    --shadow-sm: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05);
-    
-    --success: #10b981;
-    --success-bg: #d1fae5;
-    
-    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: var(--font-family);
-    background-color: var(--bg-page);
-    color: var(--text-main);
-    line-height: 1.5;
-    padding-bottom: 100px; /* space for sticky footer */
-}
-
-/* Typography & Layout Utility Base */
-.mt-2 { margin-top: 0.5rem; }
-.mt-4 { margin-top: 1rem; }
-.mb-4 { margin-bottom: 1rem; }
-.pb-24 { padding-bottom: 6rem; }
-.p-2 { padding: 0.5rem; }
-.min-h-40 { min-height: 40px; }
-.text-blue { color: var(--primary); }
-.bg-gray-50 { background-color: #f8fafc !important; }
-.rounded { border-radius: 6px; }
-.border { border: 1px solid var(--border-color); }
-.sm-icon { width: 16px; height: 16px; display: inline-block; vertical-align: middle; }
-
-.hidden-input {
-    display: none;
-    animation: fadeIn 0.2s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.status-indicator {
-    padding: 10px 16px;
-    border-radius: 8px;
-    background-color: var(--primary-light);
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 1rem;
-    border: 1px solid #bfdbfe;
-    display: inline-block;
-}
-
-/* Custom Combobox UI */
-.w-full { width: 100%; }
-.relative { position: relative; }
-
-.combobox-container {
-    position: relative;
-}
-.combobox-container input {
-    padding-right: 2.5rem; /* space for the down arrow/icon */
-}
-.combobox-container .combo-icon {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    width: 16px;
-    pointer-events: none;
-}
-.combo-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-shadow: var(--shadow-lg);
-    z-index: 1000;
-    list-style: none;
-    margin: 0;
-    padding: 4px 0;
-}
-.combo-dropdown li.combo-item {
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.2s;
-}
-.combo-dropdown li.combo-item:hover, .combo-dropdown li.combo-item.highlighted {
-    background-color: var(--primary-light);
-    color: var(--primary);
-}
-.delete-item-btn {
-    color: #ef4444;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    opacity: 0.5;
-    padding: 4px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-}
-.delete-item-btn:hover {
-    opacity: 1;
-    background-color: #fee2e2;
-}
-
-/* Navigation Navbar */
-.navbar {
-    background-color: var(--bg-surface);
-    border-bottom: 1px solid var(--border-color);
-    padding: 0 2rem;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
-
-.nav-left, .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 700;
-    font-size: 1.125rem;
-    color: var(--primary);
-}
-.logo-icon { color: var(--primary); fill: var(--primary); width: 20px; }
-
-.nav-links {
-    display: flex;
-    list-style: none;
-    gap: 1.5rem;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-muted);
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: color 0.2s;
-}
-
-.nav-links a:hover, .nav-links a.active {
-    color: var(--primary);
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    background: var(--bg-page);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-}
-.search-bar svg { width: 16px; margin-right: 8px;}
-.search-bar input {
-    border: none;
-    background: none;
-    outline: none;
-    font-family: var(--font-family);
-    font-size: 0.875rem;
-    width: 200px;
-}
-
-.profile-pic img {
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    object-fit: cover;
-}
-
-/* Main Container */
-.main-container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-/* Page Header */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
-}
-
-.title-area h1 {
-    font-size: 1.875rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    margin: 0.5rem 0;
-}
-
-.title-area p {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-}
-
-.workflow-badge {
-    color: var(--primary);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    text-transform: uppercase;
-}
-
-.serial-id-box {
-    background-color: var(--primary-light);
-    border: 1px solid #bfdbfe;
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-.serial-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 600;
-    letter-spacing: 0.05em;
-}
-
-.serial-value {
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Form Sections */
-.form-section {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.3s ease;
-}
-
-.form-section:hover {
-    box-shadow: var(--shadow-md);
-}
-
-.section-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.section-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 1.5rem;
-}
-
-.icon-circle {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background-color: var(--primary-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.icon-circle svg { width: 14px; height: 14px; }
-
-/* Grids & Inputs */
-.grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-.grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.input-group label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #334155;
-}
-.input-group label .required {
-    color: #ef4444;
-}
-
-input[type="text"], input[type="email"], input[type="date"], input[type="time"], select, textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    color: var(--text-main);
-    transition: all 0.2s;
-    background: #fff;
-    outline: none;
-}
-
-input::placeholder, textarea::placeholder {
-    color: #94a3b8;
-}
-
-input:focus, select:focus, textarea:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-textarea {
-    resize: vertical;
-}
-
-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1em;
-}
-
-/* Upload Zone */
-.upload-zone {
-    border: 1px dashed #cbd5e1;
-    border-radius: 12px;
-    background-color: #f8fafc;
-    padding: 2rem;
-    text-align: center;
-    transition: border-color 0.2s, background-color 0.2s;
-}
-.upload-zone:hover {
-    border-color: var(--primary);
-    background-color: var(--primary-light);
-}
-
-.upload-icon {
-    color: var(--primary);
-    width: 32px;
-    height: 32px;
-    margin-bottom: 0.5rem;
-}
-.upload-text {
-    font-size: 0.95rem;
-}
-.upload-subtext {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-}
-
-.or-divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 1.5rem 0;
-    color: #cbd5e1;
-}
-.or-divider::before, .or-divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #e2e8f0;
-}
-.or-divider span {
-    padding: 0 10px;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.url-input {
-    width: 80% !important;
-    margin: 0 auto;
-    display: block;
-}
-
-/* Toggles & Flags */
-.flags-grid {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 2rem;
-}
-
-.toggle-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.toggle-text {
-    display: flex;
-    flex-direction: column;
-}
-.toggle-label {
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-.toggle-desc {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-/* The switch container */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-}
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #cbd5e1;
-  transition: .4s;
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-}
-input:checked + .slider {
-  background-color: var(--primary);
-}
-input:focus + .slider {
-  box-shadow: 0 0 1px var(--primary);
-}
-input:checked + .slider:before {
-  transform: translateX(20px);
-}
-.slider.round { border-radius: 34px; }
-.slider.round:before { border-radius: 50%; }
-
-
-/* Button Tabs */
-.button-group-tabs {
-    display: flex;
-    background: #f1f5f9;
-    border-radius: 8px;
-    padding: 4px;
-}
-
-.tab-btn {
-    flex: 1;
-    border: none;
-    background: transparent;
-    border-radius: 6px;
-    padding: 8px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-.tab-btn.active {
-    background: white;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    color: var(--primary);
-    border: 1px solid var(--primary);
-}
-
-
-/* Path Input */
-.path-input-group {
-    display: flex;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    overflow: hidden;
-    background: white;
-}
-.path-prefix {
-    background: #f8fafc;
-    padding: 0.75rem 1rem;
-    border-right: 1px solid var(--border-color);
-    color: var(--text-muted);
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.path-input-group input {
-    border: none;
-    border-radius: 0;
-}
-
-
-/* Tags & Attendees */
-.attendees-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
-.tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    background-color: #f1f5f9;
-}
-.tag-green .dot { width:8px; height:8px; border-radius:50%; background:#10b981; }
-.tag-blue .dot { width:8px; height:8px; border-radius:50%; background:#3b82f6; }
-.tag-purple .dot { width:8px; height:8px; border-radius:50%; background:#8b5cf6; }
-.tag-orange .dot { width:8px; height:8px; border-radius:50%; background:#f97316; }
-
-.add-guest-btn {
-    background: transparent;
-    border: none;
-    color: var(--primary);
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    padding: 6px 12px;
-}
-.add-guest-btn:hover { text-decoration: underline; }
-
-/* Buttons */
-.btn-primary {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.2s, transform 0.1s;
-}
-.btn-primary:hover { background-color: var(--primary-hover); }
-.btn-primary:active { transform: scale(0.98); }
-
-.btn-secondary {
-    background-color: white;
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 500;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.btn-secondary:hover { background-color: #f8fafc; }
-
-.btn-outline-blue {
-    background-color: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    border-radius: 6px;
-    padding: 8px 16px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.2s;
-}
-.btn-outline-blue:hover { background-color: var(--primary-light); }
-
-/* Sticky Footer Banner */
-.sticky-footer {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 48px);
-    max-width: 900px;
-    background: rgba(255, 255, 255, 0.9 );
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 16px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-    z-index: 100;
-}
-
-.footer-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-.status-badge.success {
-    background-color: var(--success-bg);
-    color: #065f46;
-}
-
-.autosave-text {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.footer-right {
-    display: flex;
-    gap: 12px;
-}
-
-/* Hidden elements to contain form data matching Google Sheet schema implicitly */
-.hidden-fields {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .grid-2, .grid-3, .flags-grid { grid-template-columns: 1fr; }
-    .sticky-footer { flex-direction: column; gap: 1rem; width: 100%; bottom: 0; border-radius: 16px 16px 0 0; }
-    .footer-right { width: 100%; }
-    .footer-right button { flex: 1; justify-content: center; }
-}
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-/* Loader pour bouton submit (spinner devant le texte) */
-#submit-btn.btn-loading {
-    position: relative;
-    pointer-events: none; /* empêche le clic pendant l'animation */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px; /* espace entre spinner et texte */
-}
-
-#submit-btn.btn-loading::before {
-    content: "";
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid white;      /* couleur du spinner */
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --primary-light: #eff6ff;
+        --bg-page: #f8fafc;
+        --bg-surface: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+        --border-focus: #93c5fd;
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+
+        --success: #10b981;
+        --success-bg: #d1fae5;
+
+        --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: var(--font-family);
+        background-color: var(--bg-page);
+        color: var(--text-main);
+        line-height: 1.5;
+        padding-bottom: 100px;
+        /* space for sticky footer */
+    }
+
+    /* Typography & Layout Utility Base */
+    .mt-2 {
+        margin-top: 0.5rem;
+    }
+
+    .mt-4 {
+        margin-top: 1rem;
+    }
+
+    .mb-4 {
+        margin-bottom: 1rem;
+    }
+
+    .pb-24 {
+        padding-bottom: 6rem;
+    }
+
+    .p-2 {
+        padding: 0.5rem;
+    }
+
+    .min-h-40 {
+        min-height: 40px;
+    }
+
+    .text-blue {
+        color: var(--primary);
+    }
+
+    .bg-gray-50 {
+        background-color: #f8fafc !important;
+    }
+
+    .rounded {
+        border-radius: 6px;
+    }
+
+    .border {
+        border: 1px solid var(--border-color);
+    }
+
+    .sm-icon {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .hidden-input {
+        display: none;
+        animation: fadeIn 0.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .status-indicator {
+        padding: 10px 16px;
+        border-radius: 8px;
+        background-color: var(--primary-light);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 1rem;
+        border: 1px solid #bfdbfe;
+        display: inline-block;
+    }
+
+    /* Custom Combobox UI */
+    .w-full {
+        width: 100%;
+    }
+
+    .relative {
+        position: relative;
+    }
+
+    .combobox-container {
+        position: relative;
+    }
+
+    .combobox-container input {
+        padding-right: 2.5rem;
+        /* space for the down arrow/icon */
+    }
+
+    .combobox-container .combo-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        width: 16px;
+        pointer-events: none;
+    }
+
+    .combo-dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        list-style: none;
+        margin: 0;
+        padding: 4px 0;
+    }
+
+    .combo-dropdown li.combo-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s;
+    }
+
+    .combo-dropdown li.combo-item:hover,
+    .combo-dropdown li.combo-item.highlighted {
+        background-color: var(--primary-light);
+        color: var(--primary);
+    }
+
+    .delete-item-btn {
+        color: #ef4444;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        opacity: 0.5;
+        padding: 4px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+    }
+
+    .delete-item-btn:hover {
+        opacity: 1;
+        background-color: #fee2e2;
+    }
+
+    /* Navigation Navbar */
+    .navbar {
+        background-color: var(--bg-surface);
+        border-bottom: 1px solid var(--border-color);
+        padding: 0 2rem;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .nav-left,
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        font-size: 1.125rem;
+        color: var(--primary);
+    }
+
+    .logo-icon {
+        color: var(--primary);
+        fill: var(--primary);
+        width: 20px;
+    }
+
+    .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 1.5rem;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: var(--primary);
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background: var(--bg-page);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+    }
+
+    .search-bar svg {
+        width: 16px;
+        margin-right: 8px;
+    }
+
+    .search-bar input {
+        border: none;
+        background: none;
+        outline: none;
+        font-family: var(--font-family);
+        font-size: 0.875rem;
+        width: 200px;
+    }
+
+    .profile-pic img {
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+    }
+
+    /* Main Container */
+    .main-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Page Header */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+    }
+
+    .title-area h1 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin: 0.5rem 0;
+    }
+
+    .title-area p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    .workflow-badge {
+        color: var(--primary);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        text-transform: uppercase;
+    }
+
+    .serial-id-box {
+        background-color: var(--primary-light);
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .serial-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+    }
+
+    .serial-value {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Form Sections */
+    .form-section {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .form-section:hover {
+        box-shadow: var(--shadow-md);
+    }
+
+    .section-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .icon-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background-color: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon-circle svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Grids & Inputs */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .input-group label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #334155;
+    }
+
+    .input-group label .required {
+        color: #ef4444;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: var(--text-main);
+        transition: all 0.2s;
+        background: #fff;
+        outline: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: var(--border-focus);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+    }
+
+    /* Upload Zone */
+    .upload-zone {
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        background-color: #f8fafc;
+        padding: 2rem;
+        text-align: center;
+        transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .upload-zone:hover {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+    }
+
+    .upload-icon {
+        color: var(--primary);
+        width: 32px;
+        height: 32px;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-text {
+        font-size: 0.95rem;
+    }
+
+    .upload-subtext {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .or-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 1.5rem 0;
+        color: #cbd5e1;
+    }
+
+    .or-divider::before,
+    .or-divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .or-divider span {
+        padding: 0 10px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .url-input {
+        width: 80% !important;
+        margin: 0 auto;
+        display: block;
+    }
+
+    /* Toggles & Flags */
+    .flags-grid {
+        grid-template-columns: 1fr 1fr;
+        row-gap: 2rem;
+    }
+
+    .toggle-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .toggle-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .toggle-label {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .toggle-desc {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    /* The switch container */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: var(--primary);
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px var(--primary);
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(20px);
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+
+    /* Button Tabs */
+    .button-group-tabs {
+        display: flex;
+        background: #f1f5f9;
+        border-radius: 8px;
+        padding: 4px;
+    }
+
+    .tab-btn {
+        flex: 1;
+        border: none;
+        background: transparent;
+        border-radius: 6px;
+        padding: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .tab-btn.active {
+        background: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+
+    /* Path Input */
+    .path-input-group {
+        display: flex;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        overflow: hidden;
+        background: white;
+    }
+
+    .path-prefix {
+        background: #f8fafc;
+        padding: 0.75rem 1rem;
+        border-right: 1px solid var(--border-color);
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .path-input-group input {
+        border: none;
+        border-radius: 0;
+    }
+
+
+    /* Tags & Attendees */
+    .attendees-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        background-color: #f1f5f9;
+    }
+
+    .tag-green .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+    }
+
+    .tag-blue .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #3b82f6;
+    }
+
+    .tag-purple .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #8b5cf6;
+    }
+
+    .tag-orange .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #f97316;
+    }
+
+    .add-guest-btn {
+        background: transparent;
+        border: none;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 6px 12px;
+    }
+
+    .add-guest-btn:hover {
+        text-decoration: underline;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+    }
+
+    .btn-primary:active {
+        transform: scale(0.98);
+    }
+
+    .btn-secondary {
+        background-color: white;
+        color: var(--text-main);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #f8fafc;
+    }
+
+    .btn-outline-blue {
+        background-color: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+
+    .btn-outline-blue:hover {
+        background-color: var(--primary-light);
+    }
+
+    /* Sticky Footer Banner */
+    .sticky-footer {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 48px);
+        max-width: 900px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        z-index: 100;
+    }
+
+    .footer-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-badge.success {
+        background-color: var(--success-bg);
+        color: #065f46;
+    }
+
+    .autosave-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .footer-right {
+        display: flex;
+        gap: 12px;
+    }
+
+    /* Hidden elements to contain form data matching Google Sheet schema implicitly */
+    .hidden-fields {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+
+        .grid-2,
+        .grid-3,
+        .flags-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sticky-footer {
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            bottom: 0;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .footer-right {
+            width: 100%;
+        }
+
+        .footer-right button {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+    /* Loader pour bouton submit (spinner devant le texte) */
+    #submit-btn.btn-loading {
+        position: relative;
+        pointer-events: none;
+        /* empêche le clic pendant l'animation */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        /* espace entre spinner et texte */
+    }
+
+    #submit-btn.btn-loading::before {
+        content: "";
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid white;
+        /* couleur du spinner */
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
+
 <body>
     <!-- Top Navigation -->
     <nav class="navbar">
@@ -801,9 +979,9 @@ input:checked + .slider:before {
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>Customer Department</label>
+                        <label>Customer Department <span class="required">*</span></label>
                         <div class="combobox-container w-full relative" id="combo-department">
-                            <input type="text" autocomplete="off" name="Customer Department"
+                            <input type="text" autocomplete="off" name="Customer Department" required
                                 placeholder="Type or select department...">
                             <i data-feather="chevron-down" class="combo-icon"></i>
                             <ul class="combo-dropdown" style="display: none;"></ul>
@@ -811,17 +989,21 @@ input:checked + .slider:before {
                     </div>
 
                     <div class="input-group">
-                        <label>Sample Type</label>
-                        <input type="text" name="Sample Type" value="Initial" readonly class="bg-gray-50">
+                        <label>Sample Type <span class="required">*</span></label>
+                        <input type="text" name="Sample Type" value="Initial" required readonly class="bg-gray-50">
                     </div>
                     <div class="input-group">
-                        <label>Season</label>
+                        <label>Season <span class="required">*</span></label>
                         <div class="combobox-container w-full relative" id="combo-season">
-                            <input type="text" autocomplete="off" name="TKL Season"
+                            <input type="text" autocomplete="off" name="TKL Season" required
                                 placeholder="Type or select season...">
                             <i data-feather="chevron-down" class="combo-icon"></i>
                             <ul class="combo-dropdown" style="display: none;"></ul>
                         </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Costing ReadyTime <span class="required">*</span></label>
+                        <input type="date" name="Costing_RD" required>
                     </div>
                 </div>
 
@@ -1014,473 +1196,482 @@ input:checked + .slider:before {
 
     <!-- Initialization via Feather Icons -->
     <script>
-feather.replace();
+        feather.replace();
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec";
 
-// Données par défaut
-const DEFAULT_DATA = {
-    customer: ["Zara", "H&M", "Uniqlo"],
-    department: ["Menswear", "Womenswear", "Kids"],
-    season: ["SS25", "AW25", "SS26", "AW26"],
-    cdlfabric: ["Cotton 100% Jersey", "Polyester Blend 220g", "Denim 12oz"],
-    pl: ["Vishal","Kavita","Divya","Niven","Karishma", "Deepa","Khoshila", "Gaveena","Jason","Khushboo","Deivayanai","Dravish","Bharti","Yvanof","Selvanee","Nazima","Kevin"],
-    plEmails: {} 
-};
+        // Données par défaut
+        const DEFAULT_DATA = {
+            customer: ["Zara", "H&M", "Uniqlo"],
+            department: ["Menswear", "Womenswear", "Kids"],
+            season: ["SS25", "AW25", "SS26", "AW26"],
+            cdlfabric: ["Cotton 100% Jersey", "Polyester Blend 220g", "Denim 12oz"],
+            pl: ["Vishal", "Kavita", "Divya", "Niven", "Karishma", "Deepa", "Khoshila", "Gaveena", "Jason", "Khushboo", "Deivayanai", "Dravish", "Bharti", "Yvanof", "Selvanee", "Nazima", "Kevin"],
+            plEmails: {}
+        };
 
-// État global
-let CLOUD_DATA = { ...DEFAULT_DATA };
-let selectedPLs = [];
-let selectedAttendees = []; 
-let lastCNumberFromSheet = null;
-let isSubmitting = false; // Sécurité anti-double clic et multi-utilisateur
+        // État global
+        let CLOUD_DATA = { ...DEFAULT_DATA };
+        let selectedPLs = [];
+        let selectedAttendees = [];
+        let lastCNumberFromSheet = null;
+        let isSubmitting = false; // Sécurité anti-double clic et multi-utilisateur
 
-// --- INITIALISATION ---
+        // --- INITIALISATION ---
 
-document.addEventListener("DOMContentLoaded", async () => {
-    await loadCloudData(); 
-    setupCNumber();
+        document.addEventListener("DOMContentLoaded", async () => {
+            await loadCloudData();
+            setupCNumber();
 
-    setupCombobox('combo-customer', 'customer');
-    setupCombobox('combo-department', 'department');
-    setupCombobox('combo-season', 'season');
-    setupCombobox('combo-cdl', 'cdlfabric');
-    
-    setupPLCombobox('combo-pl', 'pl');
-    setupAttendeesCombobox('combo-attendees', 'pl');
+            setupCombobox('combo-customer', 'customer');
+            setupCombobox('combo-department', 'department');
+            setupCombobox('combo-season', 'season');
+            setupCombobox('combo-cdl', 'cdlfabric');
 
-    setupTabs("fabric-tabs", "fabric-cdl-container", "fabric-external-container");
-    setupMeetingTabs();
-});
+            setupPLCombobox('combo-pl', 'pl');
+            setupAttendeesCombobox('combo-attendees', 'pl');
 
-// --- GESTION DES DONNÉES ---
+            setupTabs("fabric-tabs", "fabric-cdl-container", "fabric-external-container");
+            setupMeetingTabs();
+        });
 
-async function loadCloudData() {
-    try {
-        const response = await fetch(`${APPS_SCRIPT_URL}?action=getSettings`);
-        const data = await response.json();
-        if (data && Object.keys(data).length > 0) {
-            CLOUD_DATA.pl = data.pl || DEFAULT_DATA.pl;
-            CLOUD_DATA.plEmails = data.plEmails || {};
-            lastCNumberFromSheet = data.lastCNumber || null;
+        // --- GESTION DES DONNÉES ---
+
+        async function loadCloudData() {
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getSettings`);
+                const data = await response.json();
+                if (data && Object.keys(data).length > 0) {
+                    CLOUD_DATA.pl = data.pl || DEFAULT_DATA.pl;
+                    CLOUD_DATA.plEmails = data.plEmails || {};
+                    lastCNumberFromSheet = data.lastCNumber || null;
+                }
+            } catch (error) {
+                console.warn("Mode hors-ligne pour les PL.");
+            }
         }
-    } catch (error) {
-        console.warn("Mode hors-ligne pour les PL.");
-    }
-}
 
-function getSavedList(key) {
-    const local = localStorage.getItem(`list_${key}`);
-    if (local) return JSON.parse(local);
-    return CLOUD_DATA[key] || DEFAULT_DATA[key] || [];
-}
+        function getSavedList(key) {
+            const local = localStorage.getItem(`list_${key}`);
+            if (local) return JSON.parse(local);
+            return CLOUD_DATA[key] || DEFAULT_DATA[key] || [];
+        }
 
-function localAddSetting(key, value) {
-    if (!value) return;
-    let currentList = getSavedList(key);
-    if (!currentList.includes(value)) {
-        currentList.push(value);
-        localStorage.setItem(`list_${key}`, JSON.stringify(currentList));
-    }
-}
+        function localAddSetting(key, value) {
+            if (!value) return;
+            let currentList = getSavedList(key);
+            if (!currentList.includes(value)) {
+                currentList.push(value);
+                localStorage.setItem(`list_${key}`, JSON.stringify(currentList));
+            }
+        }
 
-function localRemoveSetting(key, value) {
-    let currentList = getSavedList(key);
-    currentList = currentList.filter(v => v !== value);
-    localStorage.setItem(`list_${key}`, JSON.stringify(currentList));
-}
+        function localRemoveSetting(key, value) {
+            let currentList = getSavedList(key);
+            currentList = currentList.filter(v => v !== value);
+            localStorage.setItem(`list_${key}`, JSON.stringify(currentList));
+        }
 
-// --- LOGIQUE ID ---
+        // --- LOGIQUE ID ---
 
-function setupCNumber() {
-    // const year = new Date().getFullYear();
-    // let nextCounter = 0;
+        function setupCNumber() {
+            // const year = new Date().getFullYear();
+            // let nextCounter = 0;
 
-    // if (lastCNumberFromSheet) {
-    //     const match = lastCNumberFromSheet.match(/C\d{4}(\d{5})/);
-    //     if (match && match[1]) {
-    //         nextCounter = parseInt(match[1]) + 1;
-    //     }
-    // } else {
-    //     nextCounter = parseInt(localStorage.getItem('c_number_counter') || "0");
-    // }
-    
-    // const formattedCounter = String(nextCounter).padStart(5, '0');
-    const displayId = document.getElementById("display-id");
-    // if (displayId) {
-    //     displayId.innerText = `C${year}${formattedCounter}-01`;
-    // }
-    displayId.innerText = "Auto-generated after submission";
-}
+            // if (lastCNumberFromSheet) {
+            //     const match = lastCNumberFromSheet.match(/C\d{4}(\d{5})/);
+            //     if (match && match[1]) {
+            //         nextCounter = parseInt(match[1]) + 1;
+            //     }
+            // } else {
+            //     nextCounter = parseInt(localStorage.getItem('c_number_counter') || "0");
+            // }
 
-// function incrementCNumberLocally() {
-//     let current = parseInt(localStorage.getItem('c_number_counter') || "0");
-//     localStorage.setItem('c_number_counter', (current + 1).toString());
-// }
+            // const formattedCounter = String(nextCounter).padStart(5, '0');
+            const displayId = document.getElementById("display-id");
+            // if (displayId) {
+            //     displayId.innerText = `C${year}${formattedCounter}-01`;
+            // }
+            displayId.innerText = "Auto-generated after submission";
+        }
 
-// --- GESTION COMBOBOX ---
+        // function incrementCNumberLocally() {
+        //     let current = parseInt(localStorage.getItem('c_number_counter') || "0");
+        //     localStorage.setItem('c_number_counter', (current + 1).toString());
+        // }
 
-function setupCombobox(containerId, listKey) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const input = container.querySelector('input');
-    const dropdown = container.querySelector('.combo-dropdown');
+        // --- GESTION COMBOBOX ---
 
-    const render = (filter = '') => {
-        dropdown.innerHTML = '';
-        const list = getSavedList(listKey);
-        const filtered = list.filter(item => item.toLowerCase().includes(filter.toLowerCase()));
+        function setupCombobox(containerId, listKey) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const input = container.querySelector('input');
+            const dropdown = container.querySelector('.combo-dropdown');
 
-        filtered.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'combo-item';
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.style.alignItems = 'center';
-            li.innerHTML = `
+            const render = (filter = '') => {
+                dropdown.innerHTML = '';
+                const list = getSavedList(listKey);
+                const filtered = list.filter(item => item.toLowerCase().includes(filter.toLowerCase()));
+
+                filtered.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'combo-item';
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.alignItems = 'center';
+                    li.innerHTML = `
                 <span style="flex:1; cursor:pointer;">${item}</span>
                 <span class="delete-btn" style="color:#ef4444; padding:2px 8px; font-weight:bold; cursor:pointer; font-size:1.2rem;">&times;</span>
             `;
-            li.querySelector('span:first-child').onmousedown = () => {
-                input.value = item;
-                dropdown.style.display = 'none';
+                    li.querySelector('span:first-child').onmousedown = () => {
+                        input.value = item;
+                        dropdown.style.display = 'none';
+                    };
+                    li.querySelector('.delete-btn').onmousedown = (e) => {
+                        e.stopPropagation();
+                        localRemoveSetting(listKey, item);
+                        render(input.value);
+                    };
+                    dropdown.appendChild(li);
+                });
             };
-            li.querySelector('.delete-btn').onmousedown = (e) => {
-                e.stopPropagation();
-                localRemoveSetting(listKey, item);
-                render(input.value);
+
+            input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
+            input.oninput = () => render(input.value);
+            input.onblur = () => {
+                const val = input.value.trim();
+                if (val) localAddSetting(listKey, val);
+                setTimeout(() => dropdown.style.display = 'none', 200);
             };
-            dropdown.appendChild(li);
-        });
-    };
-
-    input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
-    input.oninput = () => render(input.value);
-    input.onblur = () => {
-        const val = input.value.trim();
-        if (val) localAddSetting(listKey, val);
-        setTimeout(() => dropdown.style.display = 'none', 200);
-    };
-}
-
-function setupPLCombobox(containerId, listKey) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const input = container.querySelector('input');
-    const dropdown = container.querySelector('.combo-dropdown');
-
-    const render = (filter = '') => {
-        dropdown.innerHTML = '';
-        const list = getSavedList(listKey);
-        const filtered = list.filter(name => name.toLowerCase().includes(filter.toLowerCase()) && !selectedPLs.includes(name));
-        
-        filtered.forEach(name => {
-            const li = document.createElement('li');
-            li.className = 'combo-item';
-            li.style.flexDirection = 'column';
-            li.style.alignItems = 'flex-start';
-            const email = CLOUD_DATA.plEmails ? CLOUD_DATA.plEmails[name] : "No email";
-            li.innerHTML = `<div style="font-weight:600;">${name}</div><div style="font-size:0.7rem; color:var(--text-muted); opacity:0.8;">${email}</div>`;
-            li.onmousedown = () => { addPLTag(name); input.value = ''; dropdown.style.display = 'none'; };
-            dropdown.appendChild(li);
-        });
-    };
-
-    // NOUVEAU : Permettre l'ajout manuel d'un nom de PL
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const val = input.value.trim();
-            if (val && !selectedPLs.includes(val)) {
-                addPLTag(val);
-                input.value = '';
-                dropdown.style.display = 'none';
-            }
         }
-    });
 
-    input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
-    input.oninput = () => render(input.value);
-    input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
-}
+        function setupPLCombobox(containerId, listKey) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const input = container.querySelector('input');
+            const dropdown = container.querySelector('.combo-dropdown');
 
-function addPLTag(name) { if (!selectedPLs.includes(name)) { selectedPLs.push(name); renderPLTags(); } }
-function renderPLTags() {
-    const container = document.getElementById("pl-tags");
-    if (!container) return;
-    container.innerHTML = "";
-    selectedPLs.forEach((pl, index) => {
-        const tag = document.createElement("span");
-        tag.className = "tag tag-blue";
-        tag.innerHTML = `${pl} <span style="cursor:pointer;" onclick="removePL(${index})">&times;</span>`;
-        container.appendChild(tag);
-    });
-}
-window.removePL = (index) => { selectedPLs.splice(index, 1); renderPLTags(); };
+            const render = (filter = '') => {
+                dropdown.innerHTML = '';
+                const list = getSavedList(listKey);
+                const filtered = list.filter(name => name.toLowerCase().includes(filter.toLowerCase()) && !selectedPLs.includes(name));
 
-function setupAttendeesCombobox(containerId, listKey) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const input = container.querySelector('input');
-    const dropdown = container.querySelector('.combo-dropdown');
+                filtered.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'combo-item';
+                    li.style.flexDirection = 'column';
+                    li.style.alignItems = 'flex-start';
+                    const email = CLOUD_DATA.plEmails ? CLOUD_DATA.plEmails[name] : "No email";
+                    li.innerHTML = `<div style="font-weight:600;">${name}</div><div style="font-size:0.7rem; color:var(--text-muted); opacity:0.8;">${email}</div>`;
+                    li.onmousedown = () => { addPLTag(name); input.value = ''; dropdown.style.display = 'none'; };
+                    dropdown.appendChild(li);
+                });
+            };
 
-    const render = (filter = '') => {
-        dropdown.innerHTML = '';
-        const list = getSavedList(listKey);
-        const filtered = list.filter(name => name.toLowerCase().includes(filter.toLowerCase()) && !selectedAttendees.some(a => a.name === name));
-        
-        filtered.forEach(name => {
-            const li = document.createElement('li');
-            li.className = 'combo-item';
-            li.style.flexDirection = 'column';
-            li.style.alignItems = 'flex-start';
-            const email = CLOUD_DATA.plEmails ? CLOUD_DATA.plEmails[name] : "No email found";
-            li.innerHTML = `<div style="font-weight:600;">${name}</div><div style="font-size:0.7rem; color:var(--text-muted);">${email}</div>`;
-            li.onmousedown = () => { addAttendeeTag(name, email); input.value = ''; dropdown.style.display = 'none'; };
-            dropdown.appendChild(li);
-        });
-    };
+            // NOUVEAU : Permettre l'ajout manuel d'un nom de PL
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = input.value.trim();
+                    if (val && !selectedPLs.includes(val)) {
+                        addPLTag(val);
+                        input.value = '';
+                        dropdown.style.display = 'none';
+                    }
+                }
+            });
 
-    // NOUVEAU : Gestion de l'ajout manuel par la touche Entrée ou Virgule
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ',') {
-            e.preventDefault();
-            const val = input.value.trim().replace(',', '');
-            if (val && val.includes('@')) {
-                // On ajoute l'email directement comme nom et email
-                addAttendeeTag(val, val);
-                input.value = '';
-                dropdown.style.display = 'none';
-            }
+            input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
+            input.oninput = () => render(input.value);
+            input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
         }
-    });
 
-    input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
-    input.oninput = () => render(input.value);
-    input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
-}
+        function addPLTag(name) { if (!selectedPLs.includes(name)) { selectedPLs.push(name); renderPLTags(); } }
+        function renderPLTags() {
+            const container = document.getElementById("pl-tags");
+            if (!container) return;
+            container.innerHTML = "";
+            selectedPLs.forEach((pl, index) => {
+                const tag = document.createElement("span");
+                tag.className = "tag tag-blue";
+                tag.innerHTML = `${pl} <span style="cursor:pointer;" onclick="removePL(${index})">&times;</span>`;
+                container.appendChild(tag);
+            });
+        }
+        window.removePL = (index) => { selectedPLs.splice(index, 1); renderPLTags(); };
 
-function addAttendeeTag(name, email) { if (!selectedAttendees.some(a => a.email === email)) { selectedAttendees.push({ name, email }); renderAttendeeTags(); } }
-function renderAttendeeTags() {
-    const container = document.getElementById("attendees-tags");
-    if (!container) return;
-    container.innerHTML = "";
-    selectedAttendees.forEach((person, index) => {
-        const tag = document.createElement("span");
-        tag.className = "tag tag-purple";
-        tag.title = person.email;
-        tag.innerHTML = `${person.name} <span style="cursor:pointer;" onclick="removeAttendee(${index})">&times;</span>`;
-        container.appendChild(tag);
-    });
-}
-window.removeAttendee = (index) => { selectedAttendees.splice(index, 1); renderAttendeeTags(); };
+        function setupAttendeesCombobox(containerId, listKey) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const input = container.querySelector('input');
+            const dropdown = container.querySelector('.combo-dropdown');
 
-function setupTabs(tabGroupId, containerAId, containerBId) {
-    const group = document.getElementById(tabGroupId);
-    if (!group) return;
-    const btns = group.querySelectorAll('.tab-btn');
-    btns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            btns.forEach(b => b.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            const isA = e.currentTarget.dataset.target === containerAId || e.currentTarget.dataset.target.includes('cdl');
-            document.getElementById(containerAId).style.display = isA ? "block" : "none";
-            document.getElementById(containerBId).style.display = isA ? "none" : "block";
-        });
-    });
-}
+            const render = (filter = '') => {
+                dropdown.innerHTML = '';
+                const list = getSavedList(listKey);
+                const filtered = list.filter(name => name.toLowerCase().includes(filter.toLowerCase()) && !selectedAttendees.some(a => a.name === name));
 
-function setupMeetingTabs() {
-    const btns = document.querySelectorAll('#meeting-tabs .tab-btn');
-    const statusInput = document.getElementById("dynamic-status-input");
-    const statusDisplay = document.getElementById("dynamic-status-display");
+                filtered.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'combo-item';
+                    li.style.flexDirection = 'column';
+                    li.style.alignItems = 'flex-start';
+                    const email = CLOUD_DATA.plEmails ? CLOUD_DATA.plEmails[name] : "No email found";
+                    li.innerHTML = `<div style="font-weight:600;">${name}</div><div style="font-size:0.7rem; color:var(--text-muted);">${email}</div>`;
+                    li.onmousedown = () => { addAttendeeTag(name, email); input.value = ''; dropdown.style.display = 'none'; };
+                    dropdown.appendChild(li);
+                });
+            };
 
-    btns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // 1. Gestion visuelle des boutons (Tabs)
-            btns.forEach(b => b.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-
-            // 2. Basculement des conteneurs
-            const isBrainstorm = e.currentTarget.dataset.target === "meeting-brainstorming";
-            document.getElementById("meeting-brainstorming-container").style.display = isBrainstorm ? "block" : "none";
-            document.getElementById("meeting-direct-container").style.display = isBrainstorm ? "none" : "block";
-
-            // 3. Mise à jour synchronisée du Statut
-            if (isBrainstorm) {
-                if (statusInput) statusInput.value = "Awaiting Meeting";
-                if (statusDisplay) {
-                    statusDisplay.innerText = "Awaiting Meeting";
-                    statusDisplay.style.background = "#eff6ff"; // Bleu clair
-                    statusDisplay.style.color = "#1e40af";      // Bleu foncé
+            // NOUVEAU : Gestion de l'ajout manuel par la touche Entrée ou Virgule
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    const val = input.value.trim().replace(',', '');
+                    if (val && val.includes('@')) {
+                        // On ajoute l'email directement comme nom et email
+                        addAttendeeTag(val, val);
+                        input.value = '';
+                        dropdown.style.display = 'none';
+                    }
                 }
-            } else {
-                if (statusInput) statusInput.value = "Awaiting Techpack";
-                if (statusDisplay) {
-                    statusDisplay.innerText = "Awaiting Techpack";
-                    statusDisplay.style.background = "#fff7ed"; // Orange très clair
-                    statusDisplay.style.color = "#9a3412";      // Marron/Orange foncé
-                }
-            }
-        });
-    });
-}
-function addAttendeeTag(name, email) { 
-    // On vérifie si l'email n'est pas déjà présent pour éviter les doublons visuels
-    if (!selectedAttendees.some(a => a.email.toLowerCase() === email.toLowerCase())) { 
-        selectedAttendees.push({ name, email }); 
-        renderAttendeeTags(); 
-    } 
-}
-// --- SOUMISSION SÉCURISÉE ---
+            });
 
-async function submitRequest() {
-    if (isSubmitting) return; // Sécurité : évite les doubles clics
+            input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
+            input.oninput = () => render(input.value);
+            input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
+        }
 
-    const btn = document.getElementById("submit-btn");
-    const statusText = document.getElementById("status-text");
-    const form = document.getElementById("costing-form");
+        function addAttendeeTag(name, email) { if (!selectedAttendees.some(a => a.email === email)) { selectedAttendees.push({ name, email }); renderAttendeeTags(); } }
+        function renderAttendeeTags() {
+            const container = document.getElementById("attendees-tags");
+            if (!container) return;
+            container.innerHTML = "";
+            selectedAttendees.forEach((person, index) => {
+                const tag = document.createElement("span");
+                tag.className = "tag tag-purple";
+                tag.title = person.email;
+                tag.innerHTML = `${person.name} <span style="cursor:pointer;" onclick="removeAttendee(${index})">&times;</span>`;
+                container.appendChild(tag);
+            });
+        }
+        window.removeAttendee = (index) => { selectedAttendees.splice(index, 1); renderAttendeeTags(); };
 
-    if (!form.checkValidity()) { form.reportValidity(); return; }
-
-    // Validation Reference
-    const referenceValue = document.getElementsByName("Reference")[0]?.value || "";
-    const specialCharsRegex = /[^a-zA-Z0-9\s-_]/;
-    if (specialCharsRegex.test(referenceValue)) {
-        statusText.innerText = "Error: Special characters are not allowed in the Reference.";
-        statusText.style.color = "#ef4444";
-        return;
-    }
-
-    if (selectedPLs.length === 0) {
-        statusText.innerText = "Error: Please assign at least one PL.";
-        statusText.style.color = "#ef4444";
-        return;
-    }
-
-    // Début de la phase de verrouillage
-    isSubmitting = true;
-    btn.disabled = true;
-    btn.classList.add("btn-loading"); // active le spinner
-    btn.innerText = "Verification in progress...       "; 
-    statusText.innerText = "Checking the availability of ID number...";
-    statusText.style.color = "var(--primary)";
-
-    try {
-       
-        // 2. Préparation des données si pas de conflit
-        statusText.innerText = "Sending data...";
-        const formData = new FormData(form);
-        let fileData = null;
-        const fileInput = document.getElementById("cad-file");
-        if (fileInput && fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            fileData = await new Promise(r => {
-                const reader = new FileReader();
-                reader.onload = (e) => r({ name: file.name, mimeType: file.type, base64: e.target.result.split(',')[1] });
-                reader.readAsDataURL(file);
+        function setupTabs(tabGroupId, containerAId, containerBId) {
+            const group = document.getElementById(tabGroupId);
+            if (!group) return;
+            const btns = group.querySelectorAll('.tab-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    btns.forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    const isA = e.currentTarget.dataset.target === containerAId || e.currentTarget.dataset.target.includes('cdl');
+                    document.getElementById(containerAId).style.display = isA ? "block" : "none";
+                    document.getElementById(containerBId).style.display = isA ? "none" : "block";
+                });
             });
         }
 
-        const fabricTabs = document.querySelector('#fabric-tabs .active');
-        const isCDL = fabricTabs ? fabricTabs.dataset.target.includes('cdl') : true;
-        const mainFabric = isCDL ? (document.querySelector('#combo-cdl input')?.value || "") : document.getElementById("fabric-external-input").value;
+        function setupMeetingTabs() {
+            const btns = document.querySelectorAll('#meeting-tabs .tab-btn');
+            const statusInput = document.getElementById("dynamic-status-input");
+            const statusDisplay = document.getElementById("dynamic-status-display");
 
-        const activeMeetingBtn = document.querySelector('#meeting-tabs .active');
-        const isBrainstorm = activeMeetingBtn ? (activeMeetingBtn.dataset.target === "meeting-brainstorming") : false;
-        const meetingDate = isBrainstorm ? (document.getElementsByName("Meeting Date")[0]?.value || "") : new Date().toISOString().split('T')[0];
-        const meetingTime = isBrainstorm ? (document.getElementsByName("Meeting Time")[0]?.value || "") : "";
-        const meetingNotes = isBrainstorm ? (document.getElementById("meeting-notes-brainstorming")?.value || "") : "";
-        
-        const now = new Date();
-        //date/Time
-        const formatted =
-            now.getFullYear() + '-' +
-            String(now.getMonth() + 1).padStart(2, '0') + '-' +
-            String(now.getDate()).padStart(2, '0') + 'T' +
-            String(now.getHours()).padStart(2, '0') + ':' +
-            String(now.getMinutes()).padStart(2, '0') + ':' +
-            String(now.getSeconds()).padStart(2, '0');
+            btns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // 1. Gestion visuelle des boutons (Tabs)
+                    btns.forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
 
-        console.log(formatted);
-        
-          // On récupère les emails des tags déjà créés
-        let finalAttendees = selectedAttendees.map(a => a.email);
-        // Sécurité : On vérifie si le champ input contient encore un email non validé
-        const attendeeInput = document.querySelector('#combo-attendees input');
-        const pendingEmail = attendeeInput ? attendeeInput.value.trim() : "";
-        if (pendingEmail && pendingEmail.includes('@') && !finalAttendees.includes(pendingEmail)) {
-            finalAttendees.push(pendingEmail);
+                    // 2. Basculement des conteneurs
+                    const isBrainstorm = e.currentTarget.dataset.target === "meeting-brainstorming";
+                    document.getElementById("meeting-brainstorming-container").style.display = isBrainstorm ? "block" : "none";
+                    document.getElementById("meeting-direct-container").style.display = isBrainstorm ? "none" : "block";
+
+                    // 3. Mise à jour synchronisée du Statut
+                    if (isBrainstorm) {
+                        if (statusInput) statusInput.value = "Awaiting Meeting";
+                        if (statusDisplay) {
+                            statusDisplay.innerText = "Awaiting Meeting";
+                            statusDisplay.style.background = "#eff6ff"; // Bleu clair
+                            statusDisplay.style.color = "#1e40af";      // Bleu foncé
+                        }
+                    } else {
+                        if (statusInput) statusInput.value = "Awaiting Techpack";
+                        if (statusDisplay) {
+                            statusDisplay.innerText = "Awaiting Techpack";
+                            statusDisplay.style.background = "#fff7ed"; // Orange très clair
+                            statusDisplay.style.color = "#9a3412";      // Marron/Orange foncé
+                        }
+                    }
+                });
+            });
         }
-        // Validation obligatoire des attendees uniquement si brainstorming
-if (isBrainstorm && finalAttendees.length === 0) {
-    statusText.innerText = "Error: Please add at least one attendee for Brainstorming.";
-    statusText.style.color = "#ef4444";
-    isSubmitting = false; // libère le bouton
-    btn.classList.remove("btn-loading");
-    btn.disabled = false;
-    btn.innerHTML = "Submit"; 
-    return;
-}  
-
-        let finalPLs = [...selectedPLs];
-        const plInput = document.querySelector('#combo-pl input');
-        // Sécurité
-        const pendingPL = plInput ? plInput.value.trim() : "";
-        if (pendingPL && !finalPLs.includes(pendingPL)) {
-            finalPLs.push(pendingPL);
+        function addAttendeeTag(name, email) {
+            // On vérifie si l'email n'est pas déjà présent pour éviter les doublons visuels
+            if (!selectedAttendees.some(a => a.email.toLowerCase() === email.toLowerCase())) {
+                selectedAttendees.push({ name, email });
+                renderAttendeeTags();
+            }
         }
-        const payload = {
-            // "C_Number": currentIdInUI,
-            "Requested_Date": formatted,
-            "Title": referenceValue,
-            "Remarks": formData.get("Remarks") || "",
-            "Customer": formData.get("Customer") || "",
-            "Customer Department": formData.get("Customer Department") || "",
-            "Sample Type": formData.get("Sample Type") || "Initial",
-            "TKL Season": formData.get("TKL Season") || "",
-            "Main Fabric": mainFabric,
-            "Fabric Supplier": isCDL ? "CDL" : "External",
-            "Fabric Header": isCDL ? (document.getElementById("fabric-cdl-header")?.value || "") : "",
-            "Status": document.getElementById("dynamic-status-input")?.value || "Pending",
-            "Attachment": fileData ? fileData.name : "None",
-            "cadFileData": fileData, 
-            "PL_Name": finalPLs.join(", "),
-            "Meeting Date": meetingDate,
-            "Meeting Time": meetingTime,
-            "Meeting Attendees": finalAttendees.join(", "), 
-            "Meeting Notes": meetingNotes
-        };
+        // --- SOUMISSION SÉCURISÉE ---
 
-        // 3. Envoi définitif
-       await fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors', // On le remet pour éviter l'erreur rouge
-    cache: 'no-cache',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-});
-        // incrementCNumberLocally();
-        statusText.innerText = "Request sent successfully!";
-        statusText.style.color = "#10b981";
-        
-       setTimeout(() => {
-    window.location.href = "https://awaiting-meet.vercel.app/";
-}, 1500);
+        async function submitRequest() {
+            if (isSubmitting) return; // Sécurité : évite les doubles clics
 
-    } catch (error) {
-        isSubmitting = false;
-        statusText.innerText = "Connection error. Please try again.";
-        statusText.style.color = "#ef4444";
-        btn.classList.remove("btn-loading");
-        btn.disabled = false;
-        btn.innerHTML = "Retry submission"; 
-    }
-}
+            const btn = document.getElementById("submit-btn");
+            const statusText = document.getElementById("status-text");
+            const form = document.getElementById("costing-form");
+
+            if (!form.checkValidity()) { form.reportValidity(); return; }
+
+            // Validation Reference
+            const referenceValue = document.getElementsByName("Reference")[0]?.value || "";
+            const specialCharsRegex = /[^a-zA-Z0-9\s-_]/;
+            if (specialCharsRegex.test(referenceValue)) {
+                statusText.innerText = "Error: Special characters are not allowed in the Reference.";
+                statusText.style.color = "#ef4444";
+                return;
+            }
+
+            if (selectedPLs.length === 0) {
+                statusText.innerText = "Error: Please assign at least one PL.";
+                statusText.style.color = "#ef4444";
+                return;
+            }
+
+            // Début de la phase de verrouillage
+            isSubmitting = true;
+            btn.disabled = true;
+            btn.classList.add("btn-loading"); // active le spinner
+            btn.innerText = "Verification in progress...       ";
+            statusText.innerText = "Checking the availability of ID number...";
+            statusText.style.color = "var(--primary)";
+
+            try {
+
+                // 2. Préparation des données si pas de conflit
+                statusText.innerText = "Sending data...";
+                const formData = new FormData(form);
+                let fileData = null;
+                const fileInput = document.getElementById("cad-file");
+                if (fileInput && fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    fileData = await new Promise(r => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => r({ name: file.name, mimeType: file.type, base64: e.target.result.split(',')[1] });
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                const fabricTabs = document.querySelector('#fabric-tabs .active');
+                const isCDL = fabricTabs ? fabricTabs.dataset.target.includes('cdl') : true;
+                const mainFabric = isCDL ? (document.querySelector('#combo-cdl input')?.value || "") : document.getElementById("fabric-external-input").value;
+
+                const activeMeetingBtn = document.querySelector('#meeting-tabs .active');
+                const isBrainstorm = activeMeetingBtn ? (activeMeetingBtn.dataset.target === "meeting-brainstorming") : false;
+                const meetingDate = isBrainstorm ? (document.getElementsByName("Meeting Date")[0]?.value || "") : new Date().toISOString().split('T')[0];
+                const meetingTime = isBrainstorm ? (document.getElementsByName("Meeting Time")[0]?.value || "") : "";
+                const meetingNotes = isBrainstorm ? (document.getElementById("meeting-notes-brainstorming")?.value || "") : "";
+
+                const now = new Date();
+                //date/Time
+                const formatted =
+                    now.getFullYear() + '-' +
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(now.getDate()).padStart(2, '0') + 'T' +
+                    String(now.getHours()).padStart(2, '0') + ':' +
+                    String(now.getMinutes()).padStart(2, '0') + ':' +
+                    String(now.getSeconds()).padStart(2, '0');
+
+                console.log(formatted);
+
+                // On récupère les emails des tags déjà créés
+                let finalAttendees = selectedAttendees.map(a => a.email);
+                // Sécurité : On vérifie si le champ input contient encore un email non validé
+                const attendeeInput = document.querySelector('#combo-attendees input');
+                const pendingEmail = attendeeInput ? attendeeInput.value.trim() : "";
+                if (pendingEmail && pendingEmail.includes('@') && !finalAttendees.includes(pendingEmail)) {
+                    finalAttendees.push(pendingEmail);
+                }
+                // Validation obligatoire des attendees uniquement si brainstorming
+                if (isBrainstorm && finalAttendees.length === 0) {
+                    statusText.innerText = "Error: Please add at least one attendee for Brainstorming.";
+                    statusText.style.color = "#ef4444";
+                    isSubmitting = false; // libère le bouton
+                    btn.classList.remove("btn-loading");
+                    btn.disabled = false;
+                    btn.innerHTML = "Submit";
+                    return;
+                }
+
+                let finalPLs = [...selectedPLs];
+                const plInput = document.querySelector('#combo-pl input');
+                // Sécurité
+                const pendingPL = plInput ? plInput.value.trim() : "";
+                if (pendingPL && !finalPLs.includes(pendingPL)) {
+                    finalPLs.push(pendingPL);
+                }
+
+                const rawRd = formData.get("Costing_RD");
+                let formattedRd = "";
+                if(rawRd) {
+                    const [y, m, d] = rawRd.split('-');
+                    formattedRd = `${m}/${d}/${y}`;
+                }
+
+                const payload = {
+                    // "C_Number": currentIdInUI,
+                    "Requested_Date": formatted,
+                    "Title": referenceValue,
+                    "Remarks": formData.get("Remarks") || "",
+                    "Costing Ready Date": formattedRd,
+                    "Customer": formData.get("Customer") || "",
+                    "Customer Department": formData.get("Customer Department") || "",
+                    "Sample Type": formData.get("Sample Type") || "Initial",
+                    "TKL Season": formData.get("TKL Season") || "",
+                    "Main Fabric": mainFabric,
+                    "Fabric Supplier": isCDL ? "CDL" : "External",
+                    "Fabric Header": isCDL ? (document.getElementById("fabric-cdl-header")?.value || "") : "",
+                    "Status": document.getElementById("dynamic-status-input")?.value || "Pending",
+                    "Attachment": fileData ? fileData.name : "None",
+                    "cadFileData": fileData,
+                    "PL_Name": finalPLs.join(", "),
+                    "Meeting Date": meetingDate,
+                    "Meeting Time": meetingTime,
+                    "Meeting Attendees": finalAttendees.join(", "),
+                    "Meeting Notes": meetingNotes
+                };
+
+                // 3. Envoi définitif
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // On le remet pour éviter l'erreur rouge
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                // incrementCNumberLocally();
+                statusText.innerText = "Request sent successfully!";
+                statusText.style.color = "#10b981";
+
+                setTimeout(() => {
+                    window.location.href = "https://awaiting-meet.vercel.app/";
+                }, 1500);
+
+            } catch (error) {
+                isSubmitting = false;
+                statusText.innerText = "Connection error. Please try again.";
+                statusText.style.color = "#ef4444";
+                btn.classList.remove("btn-loading");
+                btn.disabled = false;
+                btn.innerHTML = "Retry submission";
+            }
+        }
     </script>
-    
+
 </body>
 
 </html>
