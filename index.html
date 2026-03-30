@@ -8,10 +8,9 @@
     <!-- Google Fonts for Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="styles.css">
 
     <!-- Feather Icons for lightweight SVGs -->
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.2/dist/feather.min.js"></script>
 </head>
 <style>
     :root {
@@ -707,7 +706,33 @@ input:checked + .slider:before {
     .footer-right { width: 100%; }
     .footer-right button { flex: 1; justify-content: center; }
 }
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
+/* Loader pour bouton submit (spinner devant le texte) */
+#submit-btn.btn-loading {
+    position: relative;
+    pointer-events: none; /* empêche le clic pendant l'animation */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* espace entre spinner et texte */
+}
+
+#submit-btn.btn-loading::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;      /* couleur du spinner */
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 <body>
     <!-- Top Navigation -->
@@ -747,9 +772,9 @@ input:checked + .slider:before {
                 <p>Initiate a comprehensive manufacturing costing analysis and production plan.</p>
             </div>
             <div class="serial-id-box">
-                <span class="serial-label">C_Number (Auto-generated)</span>
+                <span class="serial-label">C_Number</span>
                 <span class="serial-value"><i data-feather="cpu" class="sm-icon"></i> <span
-                        id="display-id">C202600001-01</span></span>
+                        id="display-id"></span></span>
             </div>
         </header>
 
@@ -980,7 +1005,7 @@ input:checked + .slider:before {
             <span class="autosave-text" id="status-text">Ready to save</span>
         </div>
         <div class="footer-right">
-            <button type="button" class="btn-secondary" id="draft-btn">Save Draft</button>
+            <!-- <button type="button" class="btn-secondary" id="draft-btn">Save Draft</button> -->
             <button type="button" class="btn-primary" id="submit-btn" onclick="submitRequest()">
                 Submit Request <i data-feather="send" class="sm-icon"></i>
             </button>
@@ -1068,29 +1093,30 @@ function localRemoveSetting(key, value) {
 // --- LOGIQUE ID ---
 
 function setupCNumber() {
-    const year = new Date().getFullYear();
-    let nextCounter = 0;
+    // const year = new Date().getFullYear();
+    // let nextCounter = 0;
 
-    if (lastCNumberFromSheet) {
-        const match = lastCNumberFromSheet.match(/C\d{4}(\d{5})/);
-        if (match && match[1]) {
-            nextCounter = parseInt(match[1]) + 1;
-        }
-    } else {
-        nextCounter = parseInt(localStorage.getItem('c_number_counter') || "0");
-    }
+    // if (lastCNumberFromSheet) {
+    //     const match = lastCNumberFromSheet.match(/C\d{4}(\d{5})/);
+    //     if (match && match[1]) {
+    //         nextCounter = parseInt(match[1]) + 1;
+    //     }
+    // } else {
+    //     nextCounter = parseInt(localStorage.getItem('c_number_counter') || "0");
+    // }
     
-    const formattedCounter = String(nextCounter).padStart(5, '0');
+    // const formattedCounter = String(nextCounter).padStart(5, '0');
     const displayId = document.getElementById("display-id");
-    if (displayId) {
-        displayId.innerText = `C${year}${formattedCounter}-01`;
-    }
+    // if (displayId) {
+    //     displayId.innerText = `C${year}${formattedCounter}-01`;
+    // }
+    displayId.innerText = "Auto-generated after submission";
 }
 
-function incrementCNumberLocally() {
-    let current = parseInt(localStorage.getItem('c_number_counter') || "0");
-    localStorage.setItem('c_number_counter', (current + 1).toString());
-}
+// function incrementCNumberLocally() {
+//     let current = parseInt(localStorage.getItem('c_number_counter') || "0");
+//     localStorage.setItem('c_number_counter', (current + 1).toString());
+// }
 
 // --- GESTION COMBOBOX ---
 
@@ -1142,10 +1168,12 @@ function setupPLCombobox(containerId, listKey) {
     if (!container) return;
     const input = container.querySelector('input');
     const dropdown = container.querySelector('.combo-dropdown');
+
     const render = (filter = '') => {
         dropdown.innerHTML = '';
         const list = getSavedList(listKey);
         const filtered = list.filter(name => name.toLowerCase().includes(filter.toLowerCase()) && !selectedPLs.includes(name));
+        
         filtered.forEach(name => {
             const li = document.createElement('li');
             li.className = 'combo-item';
@@ -1157,6 +1185,20 @@ function setupPLCombobox(containerId, listKey) {
             dropdown.appendChild(li);
         });
     };
+
+    // NOUVEAU : Permettre l'ajout manuel d'un nom de PL
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const val = input.value.trim();
+            if (val && !selectedPLs.includes(val)) {
+                addPLTag(val);
+                input.value = '';
+                dropdown.style.display = 'none';
+            }
+        }
+    });
+
     input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
     input.oninput = () => render(input.value);
     input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
@@ -1181,10 +1223,12 @@ function setupAttendeesCombobox(containerId, listKey) {
     if (!container) return;
     const input = container.querySelector('input');
     const dropdown = container.querySelector('.combo-dropdown');
+
     const render = (filter = '') => {
         dropdown.innerHTML = '';
         const list = getSavedList(listKey);
         const filtered = list.filter(name => name.toLowerCase().includes(filter.toLowerCase()) && !selectedAttendees.some(a => a.name === name));
+        
         filtered.forEach(name => {
             const li = document.createElement('li');
             li.className = 'combo-item';
@@ -1196,6 +1240,21 @@ function setupAttendeesCombobox(containerId, listKey) {
             dropdown.appendChild(li);
         });
     };
+
+    // NOUVEAU : Gestion de l'ajout manuel par la touche Entrée ou Virgule
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const val = input.value.trim().replace(',', '');
+            if (val && val.includes('@')) {
+                // On ajoute l'email directement comme nom et email
+                addAttendeeTag(val, val);
+                input.value = '';
+                dropdown.style.display = 'none';
+            }
+        }
+    });
+
     input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
     input.oninput = () => render(input.value);
     input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
@@ -1233,19 +1292,46 @@ function setupTabs(tabGroupId, containerAId, containerBId) {
 
 function setupMeetingTabs() {
     const btns = document.querySelectorAll('#meeting-tabs .tab-btn');
+    const statusInput = document.getElementById("dynamic-status-input");
+    const statusDisplay = document.getElementById("dynamic-status-display");
+
     btns.forEach(btn => {
         btn.addEventListener('click', (e) => {
+            // 1. Gestion visuelle des boutons (Tabs)
             btns.forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active');
+
+            // 2. Basculement des conteneurs
             const isBrainstorm = e.currentTarget.dataset.target === "meeting-brainstorming";
             document.getElementById("meeting-brainstorming-container").style.display = isBrainstorm ? "block" : "none";
             document.getElementById("meeting-direct-container").style.display = isBrainstorm ? "none" : "block";
-            const statusInput = document.getElementById("dynamic-status-input");
-            if (statusInput) statusInput.value = isBrainstorm ? "Awaiting Meeting" : "Pending";
+
+            // 3. Mise à jour synchronisée du Statut
+            if (isBrainstorm) {
+                if (statusInput) statusInput.value = "Awaiting Meeting";
+                if (statusDisplay) {
+                    statusDisplay.innerText = "Awaiting Meeting";
+                    statusDisplay.style.background = "#eff6ff"; // Bleu clair
+                    statusDisplay.style.color = "#1e40af";      // Bleu foncé
+                }
+            } else {
+                if (statusInput) statusInput.value = "Awaiting Techpack";
+                if (statusDisplay) {
+                    statusDisplay.innerText = "Awaiting Techpack";
+                    statusDisplay.style.background = "#fff7ed"; // Orange très clair
+                    statusDisplay.style.color = "#9a3412";      // Marron/Orange foncé
+                }
+            }
         });
     });
 }
-
+function addAttendeeTag(name, email) { 
+    // On vérifie si l'email n'est pas déjà présent pour éviter les doublons visuels
+    if (!selectedAttendees.some(a => a.email.toLowerCase() === email.toLowerCase())) { 
+        selectedAttendees.push({ name, email }); 
+        renderAttendeeTags(); 
+    } 
+}
 // --- SOUMISSION SÉCURISÉE ---
 
 async function submitRequest() {
@@ -1275,36 +1361,13 @@ async function submitRequest() {
     // Début de la phase de verrouillage
     isSubmitting = true;
     btn.disabled = true;
-    btn.innerHTML = `<span style="display:inline-block; animation:spin 1s linear infinite;">↻</span> Vérification en cours...`;
+    btn.classList.add("btn-loading"); // active le spinner
+    btn.innerText = "Verification in progress...       "; 
     statusText.innerText = "Checking the availability of ID number...";
     statusText.style.color = "var(--primary)";
 
     try {
-        // 1. Re-vérifier le dernier C_Number juste avant d'envoyer
-        const responseCheck = await fetch(`${APPS_SCRIPT_URL}?action=getSettings`);
-        const latestData = await responseCheck.json();
-        const currentIdInUI = document.getElementById("display-id").innerText;
-        
-        if (latestData.lastCNumber) {
-            const lastInSheet = latestData.lastCNumber;
-            const matchLast = lastInSheet.match(/C\d{4}(\d{5})/);
-            const matchUI = currentIdInUI.match(/C\d{4}(\d{5})/);
-            
-            if (matchLast && matchUI && parseInt(matchLast[1]) >= parseInt(matchUI[1])) {
-                // Conflit détecté ! Quelqu'un a soumis avant nous.
-                statusText.innerText = "Conflict detected: The ID number has just been used by another user. Updating...";
-                statusText.style.color = "#f59e0b";
-                
-                lastCNumberFromSheet = lastInSheet;
-                setupCNumber(); // On régénère le bon numéro
-                
-                isSubmitting = false;
-                btn.disabled = false;
-                btn.innerHTML = "Submit again";
-                return;
-            }
-        }
-
+       
         // 2. Préparation des données si pas de conflit
         statusText.innerText = "Sending data...";
         const formData = new FormData(form);
@@ -1328,10 +1391,48 @@ async function submitRequest() {
         const meetingDate = isBrainstorm ? (document.getElementsByName("Meeting Date")[0]?.value || "") : new Date().toISOString().split('T')[0];
         const meetingTime = isBrainstorm ? (document.getElementsByName("Meeting Time")[0]?.value || "") : "";
         const meetingNotes = isBrainstorm ? (document.getElementById("meeting-notes-brainstorming")?.value || "") : "";
+        
+        const now = new Date();
+        //date/Time
+        const formatted =
+            now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0') + 'T' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0') + ':' +
+            String(now.getSeconds()).padStart(2, '0');
 
+        console.log(formatted);
+        
+          // On récupère les emails des tags déjà créés
+        let finalAttendees = selectedAttendees.map(a => a.email);
+        // Sécurité : On vérifie si le champ input contient encore un email non validé
+        const attendeeInput = document.querySelector('#combo-attendees input');
+        const pendingEmail = attendeeInput ? attendeeInput.value.trim() : "";
+        if (pendingEmail && pendingEmail.includes('@') && !finalAttendees.includes(pendingEmail)) {
+            finalAttendees.push(pendingEmail);
+        }
+        // Validation obligatoire des attendees uniquement si brainstorming
+if (isBrainstorm && finalAttendees.length === 0) {
+    statusText.innerText = "Error: Please add at least one attendee for Brainstorming.";
+    statusText.style.color = "#ef4444";
+    isSubmitting = false; // libère le bouton
+    btn.classList.remove("btn-loading");
+    btn.disabled = false;
+    btn.innerHTML = "Submit"; 
+    return;
+}  
+
+        let finalPLs = [...selectedPLs];
+        const plInput = document.querySelector('#combo-pl input');
+        // Sécurité
+        const pendingPL = plInput ? plInput.value.trim() : "";
+        if (pendingPL && !finalPLs.includes(pendingPL)) {
+            finalPLs.push(pendingPL);
+        }
         const payload = {
-            "C_Number": currentIdInUI,
-            "Requested_Date": new Date().toISOString(),
+            // "C_Number": currentIdInUI,
+            "Requested_Date": formatted,
             "Title": referenceValue,
             "Remarks": formData.get("Remarks") || "",
             "Customer": formData.get("Customer") || "",
@@ -1344,21 +1445,24 @@ async function submitRequest() {
             "Status": document.getElementById("dynamic-status-input")?.value || "Pending",
             "Attachment": fileData ? fileData.name : "None",
             "cadFileData": fileData, 
-            "PL_Name": selectedPLs.join(", "),
+            "PL_Name": finalPLs.join(", "),
             "Meeting Date": meetingDate,
             "Meeting Time": meetingTime,
-            "Meeting Attendees": selectedAttendees.map(a => a.email).join(", "), 
+            "Meeting Attendees": finalAttendees.join(", "), 
             "Meeting Notes": meetingNotes
         };
 
         // 3. Envoi définitif
-        await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(payload)
-        });
-        
-        incrementCNumberLocally();
+       await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors', // On le remet pour éviter l'erreur rouge
+    cache: 'no-cache',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+});
+        // incrementCNumberLocally();
         statusText.innerText = "Request sent successfully!";
         statusText.style.color = "#10b981";
         
@@ -1368,8 +1472,9 @@ async function submitRequest() {
         isSubmitting = false;
         statusText.innerText = "Connection error. Please try again.";
         statusText.style.color = "#ef4444";
+        btn.classList.remove("btn-loading");
         btn.disabled = false;
-        btn.innerHTML = "Retry submission";
+        btn.innerHTML = "Retry submission"; 
     }
 }
     </script>
