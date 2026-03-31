@@ -1159,11 +1159,29 @@
                     </div>
 
                     <div class="input-group">
-                        <label>Selected Assignees:<span class="required">*</span></label>
+                        <label>Selected Assignees (PL):<span class="required">*</span></label>
                         <div id="pl-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
                             <!-- Tags injected here -->
                         </div>
                         <input type="hidden" id="pl-hidden-input" name="PL_Name">
+                    </div>
+
+                    <div class="input-group mt-2">
+                        <label>Assign Accessory (Search or type email)</label>
+                        <div class="combobox-container w-full relative" id="combo-accessory">
+                            <input type="text" autocomplete="off" id="accessory-search-input"
+                                placeholder="Type name or email, press Enter to add...">
+                            <i data-feather="search" class="combo-icon"></i>
+                            <ul class="combo-dropdown" style="display: none;"></ul>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-2">
+                        <label>Selected Accessory:</label>
+                        <div id="accessory-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
+                            <!-- Tags injected here -->
+                        </div>
+                        <input type="hidden" id="accessory-hidden-input" name="Accessory_Name">
                     </div>
 
                     <div class="input-group mt-4" style="grid-column: 1 / -1;">
@@ -1207,12 +1225,15 @@
             season: ["SS25", "AW25", "SS26", "AW26"],
             cdlfabric: ["Cotton 100% Jersey", "Polyester Blend 220g", "Denim 12oz"],
             pl: ["Vishal", "Kavita", "Divya", "Niven", "Karishma", "Deepa", "Khoshila", "Gaveena", "Jason", "Khushboo", "Deivayanai", "Dravish", "Bharti", "Yvanof", "Selvanee", "Nazima", "Kevin"],
-            plEmails: {}
+            plEmails: {},
+            accessory: [],
+            accessoryEmails: {}
         };
 
         // État global
         let CLOUD_DATA = { ...DEFAULT_DATA };
         let selectedPLs = [];
+        let selectedAccessories = [];
         let selectedAttendees = [];
         let lastCNumberFromSheet = null;
         let isSubmitting = false; // Sécurité anti-double clic et multi-utilisateur
@@ -1229,6 +1250,7 @@
             setupCombobox('combo-cdl', 'cdlfabric');
 
             setupPLCombobox('combo-pl', 'pl');
+            setupAccessoryCombobox('combo-accessory', 'accessory');
             setupAttendeesCombobox('combo-attendees', 'pl');
 
             setupTabs("fabric-tabs", "fabric-cdl-container", "fabric-external-container");
@@ -1244,6 +1266,8 @@
                 if (data && Object.keys(data).length > 0) {
                     CLOUD_DATA.pl = data.pl || DEFAULT_DATA.pl;
                     CLOUD_DATA.plEmails = data.plEmails || {};
+                    CLOUD_DATA.accessory = data.accessory || DEFAULT_DATA.accessory;
+                    CLOUD_DATA.accessoryEmails = data.accessoryEmails || {};
                     lastCNumberFromSheet = data.lastCNumber || null;
                 }
             } catch (error) {
@@ -1399,6 +1423,60 @@
             });
         }
         window.removePL = (index) => { selectedPLs.splice(index, 1); renderPLTags(); };
+
+        function setupAccessoryCombobox(containerId, listKey) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const input = container.querySelector('input');
+            const dropdown = container.querySelector('.combo-dropdown');
+
+            const render = (filter = '') => {
+                dropdown.innerHTML = '';
+                const list = getSavedList(listKey);
+                const filtered = list.filter(name => name.toLowerCase().includes(filter.toLowerCase()) && !selectedAccessories.includes(name));
+
+                filtered.forEach(name => {
+                    const li = document.createElement('li');
+                    li.className = 'combo-item';
+                    li.style.flexDirection = 'column';
+                    li.style.alignItems = 'flex-start';
+                    const email = CLOUD_DATA.accessoryEmails ? CLOUD_DATA.accessoryEmails[name] : "No email";
+                    li.innerHTML = `<div style="font-weight:600;">${name}</div><div style="font-size:0.7rem; color:var(--text-muted); opacity:0.8;">${email}</div>`;
+                    li.onmousedown = () => { addAccessoryTag(name); input.value = ''; dropdown.style.display = 'none'; };
+                    dropdown.appendChild(li);
+                });
+            };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = input.value.trim();
+                    if (val && !selectedAccessories.includes(val)) {
+                        addAccessoryTag(val);
+                        input.value = '';
+                        dropdown.style.display = 'none';
+                    }
+                }
+            });
+
+            input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
+            input.oninput = () => render(input.value);
+            input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
+        }
+
+        function addAccessoryTag(name) { if (!selectedAccessories.includes(name)) { selectedAccessories.push(name); renderAccessoryTags(); } }
+        function renderAccessoryTags() {
+            const container = document.getElementById("accessory-tags");
+            if (!container) return;
+            container.innerHTML = "";
+            selectedAccessories.forEach((acc, index) => {
+                const tag = document.createElement("span");
+                tag.className = "tag tag-blue";
+                tag.innerHTML = `${acc} <span style="cursor:pointer;" onclick="removeAccessory(${index})">&times;</span>`;
+                container.appendChild(tag);
+            });
+        }
+        window.removeAccessory = (index) => { selectedAccessories.splice(index, 1); renderAccessoryTags(); };
 
         function setupAttendeesCombobox(containerId, listKey) {
             const container = document.getElementById(containerId);
@@ -1613,9 +1691,16 @@
                     finalPLs.push(pendingPL);
                 }
 
+                let finalAccessories = [...selectedAccessories];
+                const accessoryInput = document.querySelector('#combo-accessory input');
+                const pendingAccessory = accessoryInput ? accessoryInput.value.trim() : "";
+                if (pendingAccessory && !finalAccessories.includes(pendingAccessory)) {
+                    finalAccessories.push(pendingAccessory);
+                }
+
                 const rawRd = formData.get("Costing_RD");
                 let formattedRd = "";
-                if(rawRd) {
+                if (rawRd) {
                     const [y, m, d] = rawRd.split('-');
                     formattedRd = `${m}/${d}/${y}`;
                 }
@@ -1637,6 +1722,7 @@
                     "Attachment": fileData ? fileData.name : "None",
                     "cadFileData": fileData,
                     "PL_Name": finalPLs.join(", "),
+                    "Accessory_Name": finalAccessories.join(", "),
                     "Meeting Date": meetingDate,
                     "Meeting Time": meetingTime,
                     "Meeting Attendees": finalAttendees.join(", "),
