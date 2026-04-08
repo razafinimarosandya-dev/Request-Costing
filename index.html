@@ -2001,6 +2001,8 @@
                     formattedRd = `${m}/${d}/${y}`;
                 }
 
+                const currentStatus = document.getElementById("dynamic-status-input")?.value || "Pending";
+                
                 const payload = {
                     // "C_Number": currentIdInUI,
                     "Requested_Date": formatted,
@@ -2014,7 +2016,7 @@
                     "Main Fabric": mainFabric,
                     "Fabric Supplier": isCDL ? "CDL" : "External",
                     "Fabric Header": isCDL ? (document.getElementById("fabric-cdl-header")?.value || "") : "",
-                    "Status": document.getElementById("dynamic-status-input")?.value || "Pending",
+                    "Status": currentStatus,
                     "Attachment": fileData ? fileData.name : "None",
                     "cadFileData": fileData,
                     "PL_Name": finalPLs.join(", "),
@@ -2024,6 +2026,14 @@
                     "Meeting Attendees": finalAttendees.join(", "),
                     "Meeting Notes": meetingNotes
                 };
+
+                if (currentStatus === "Awaiting Techpack") {
+                    const d = new Date();
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const year = d.getFullYear();
+                    payload["Tehpack_uplaodDate"] = `${year}-${month}-${day}`;
+                }
 
                 // 3. Envoi définitif
                 await fetch(APPS_SCRIPT_URL, {
