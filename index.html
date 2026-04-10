@@ -1009,6 +1009,11 @@
                 </div>
 
                 <div class="input-group mt-4">
+                    <label>Block Details</label>
+                    <textarea name="Block Details" placeholder="Enter block details here..." rows="3"></textarea>
+                </div>
+
+                <div class="input-group mt-4">
                     <label>Remarks</label>
                     <textarea name="Remarks" placeholder="Enter detailed remarks here..." rows="4"></textarea>
                 </div>
@@ -2008,6 +2013,7 @@
                     "Requested_Date": formatted,
                     "Title": referenceValue,
                     "Remarks": formData.get("Remarks") || "",
+                    "Block Details": formData.get("Block Details") || "",
                     "Costing Ready Date": formattedRd,
                     "Customer": formData.get("Customer") || "",
                     "Customer Department": formData.get("Customer Department") || "",
