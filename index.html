@@ -206,8 +206,8 @@
     .navbar {
         background-color: var(--bg-surface);
         border-bottom: 1px solid var(--border-color);
-        padding: 0 2rem;
-        height: 64px;
+        padding: 0.75rem 2rem;
+        min-height: 64px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -484,6 +484,12 @@
     .upload-zone:hover {
         border-color: var(--primary);
         background-color: var(--primary-light);
+    }
+
+    .upload-zone.drag-active {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
     }
 
     .upload-icon {
@@ -873,6 +879,7 @@
             flex: 1;
             justify-content: center;
         }
+
     }
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -940,328 +947,339 @@
 
     <!-- Main Container -->
     <main class="main-container">
-      <div id="form-section">
-        <!-- Header Section -->
-        <header class="page-header">
-            <div class="title-area">
-                <span class="workflow-badge">
-                    <i data-feather="plus-circle" class="sm-icon"></i> NEW WORKFLOW
-                </span>
-                <h1>Create New Costing Request</h1>
-                <p>Initiate a comprehensive manufacturing costing analysis and production plan.</p>
-            </div>
-            <div class="serial-id-box">
-                <span class="serial-label">C_Number</span>
-                <span class="serial-value"><i data-feather="cpu" class="sm-icon"></i> <span
-                        id="display-id"></span></span>
-            </div>
-        </header>
-
-        <form id="costing-form">
-            <!-- Section 1: Core Details -->
-            <section class="form-section">
-                <h2 class="section-title">
-                    <div class="icon-circle text-blue"><i data-feather="info"></i></div>
-                    Step 1: Core Details
-                </h2>
-                <div class="grid-2">
-                    <div class="input-group">
-                        <label>Reference <span class="required">*</span></label>
-                        <input type="text" name="Reference" required placeholder="Enter reference...">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Customer <span class="required">*</span></label>
-                        <div class="combobox-container w-full relative" id="combo-customer">
-                            <input type="text" autocomplete="off" name="Customer" required
-                                placeholder="Type or select customer...">
-                            <i data-feather="chevron-down" class="combo-icon"></i>
-                            <ul class="combo-dropdown" style="display: none;"></ul>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Customer Department <span class="required">*</span></label>
-                        <div class="combobox-container w-full relative" id="combo-department">
-                            <input type="text" autocomplete="off" name="Customer Department" required
-                                placeholder="Type or select department...">
-                            <i data-feather="chevron-down" class="combo-icon"></i>
-                            <ul class="combo-dropdown" style="display: none;"></ul>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Sample Type <span class="required">*</span></label>
-                        <input type="text" name="Sample Type" value="Initial" required readonly class="bg-gray-50">
-                    </div>
-                    <div class="input-group">
-                        <label>Season <span class="required">*</span></label>
-                        <div class="combobox-container w-full relative" id="combo-season">
-                            <input type="text" autocomplete="off" name="TKL Season" required
-                                placeholder="Type or select season...">
-                            <i data-feather="chevron-down" class="combo-icon"></i>
-                            <ul class="combo-dropdown" style="display: none;"></ul>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Costing ReadyTime <span class="required">*</span></label>
-                        <input type="date" name="Costing_RD" required>
-                    </div>
+        <div id="form-section">
+            <!-- Header Section -->
+            <header class="page-header">
+                <div class="title-area">
+                    <span class="workflow-badge">
+                        <i data-feather="plus-circle" class="sm-icon"></i> NEW WORKFLOW
+                    </span>
+                    <h1>Create New Costing Request</h1>
+                    <p>Initiate a comprehensive manufacturing costing analysis and production plan.</p>
                 </div>
-
-                <div class="input-group mt-4">
-                    <label>Block Details</label>
-                    <textarea name="Block Details" placeholder="Enter block details here..." rows="3"></textarea>
+                <div class="serial-id-box">
+                    <span class="serial-label">C_Number</span>
+                    <span class="serial-value"><i data-feather="cpu" class="sm-icon"></i> <span
+                            id="display-id"></span></span>
                 </div>
+            </header>
 
-                <div class="input-group mt-4">
-                    <label>Remarks</label>
-                    <textarea name="Remarks" placeholder="Enter detailed remarks here..." rows="4"></textarea>
-                </div>
-
-                <div class="input-group mt-4">
-                    <label>CADs Attachment</label>
-                    <div class="upload-zone" id="upload-zone" style="cursor:pointer;"
-                        onclick="document.getElementById('cad-file').click()">
-                        <i data-feather="upload-cloud" class="upload-icon"></i>
-                        <p class="upload-text"><strong id="upload-label">Click to upload CAD file</strong> or drag and
-                            drop</p>
-                        <p class="upload-subtext" id="upload-subtext">DXF, DWG or PDF (Max 5MB)</p>
-
-                        <input type="file" id="cad-file" style="display:none"
-                            onchange="document.getElementById('upload-label').innerText = this.files[0] ? 'Selected: ' + this.files[0].name : 'Click to upload CAD file'; document.getElementById('upload-subtext').innerText = this.files[0] ? 'File ready for upload' : 'DXF, DWG or PDF (Max 5MB)'">
-
-                        <div class="or-divider" onclick="event.stopPropagation()"><span>OR</span></div>
-                        <input type="text" id="cad-url" name="Attachment_URL" class="url-input"
-                            placeholder="Paste CAD URL/Link" onclick="event.stopPropagation()">
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 2: Main Fabric -->
-            <section class="form-section mt-4">
-                <h2 class="section-title">
-                    <div class="icon-circle text-blue"><i data-feather="package"></i></div>
-                    Step 2: Main Fabric
-                </h2>
-                <div class="input-group mb-4">
-                    <label>Fabric Origin</label>
-                    <div class="button-group-tabs" id="fabric-tabs">
-                        <button type="button" class="tab-btn active" data-target="fabric-cdl"><i
-                                data-feather="check-circle" class="sm-icon"></i> CDL</button>
-                        <button type="button" class="tab-btn" data-target="fabric-external">External</button>
-                    </div>
-                </div>
-
-                <div id="fabric-cdl-container" class="mt-4">
+            <form id="costing-form">
+                <!-- Section 1: Core Details -->
+                <section class="form-section">
+                    <h2 class="section-title">
+                        <div class="icon-circle text-blue"><i data-feather="info"></i></div>
+                        Step 1: Core Details
+                    </h2>
                     <div class="grid-2">
                         <div class="input-group">
-                            <label>Select CDL Fabric</label>
-                            <div class="combobox-container w-full relative" id="combo-cdl">
-                                <input type="text" autocomplete="off" name="Main Fabric CDL"
-                                    placeholder="Type or select CDL fabric...">
+                            <label>Reference <span class="required">*</span></label>
+                            <input type="text" name="Reference" required placeholder="Enter reference...">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Customer <span class="required">*</span></label>
+                            <div class="combobox-container w-full relative" id="combo-customer">
+                                <input type="text" autocomplete="off" name="Customer" required
+                                    placeholder="Type or select customer...">
                                 <i data-feather="chevron-down" class="combo-icon"></i>
                                 <ul class="combo-dropdown" style="display: none;"></ul>
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Fabric Header</label>
-                            <input type="text" id="fabric-cdl-header" placeholder="Enter Header...">
+                            <label>Customer Department <span class="required">*</span></label>
+                            <div class="combobox-container w-full relative" id="combo-department">
+                                <input type="text" autocomplete="off" name="Customer Department" required
+                                    placeholder="Type or select department...">
+                                <i data-feather="chevron-down" class="combo-icon"></i>
+                                <ul class="combo-dropdown" style="display: none;"></ul>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div id="fabric-external-container" class="mt-4" style="display: none;">
-                    <div class="input-group">
-                        <label>External Fabric Details</label>
-                        <input type="text" id="fabric-external-input"
-                            placeholder="Type supplier and fabric composition...">
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 3: Meeting -->
-            <section class="form-section mt-4">
-                <h2 class="section-title">
-                    <div class="icon-circle text-blue"><i data-feather="users"></i></div>
-                    Step 3: Meeting Strategy
-                </h2>
-
-                <div class="input-group mb-4">
-                    <label>Meeting Type</label>
-                    <div class="button-group-tabs" id="meeting-tabs">
-                        <button type="button" class="tab-btn active" data-target="meeting-brainstorming"><i
-                                data-feather="check-circle" class="sm-icon"></i> Brainstorming</button>
-                        <button type="button" class="tab-btn" data-target="meeting-direct">Direct</button>
-                    </div>
-                </div>
-
-                <div id="meeting-brainstorming-container" class="mt-4">
-                    <div class="grid-2">
                         <div class="input-group">
-                            <label>Meeting Date <span class="required">*</span></label>
-                            <input type="date" id="meeting-date" name="Meeting Date">
+                            <label>Sample Type <span class="required">*</span></label>
+                            <input type="text" name="Sample Type" value="Initial" required readonly class="bg-gray-50">
                         </div>
                         <div class="input-group">
-                            <label>Meeting Time <span class="required">*</span></label>
-                            <input type="time" id="meeting-time" name="Meeting Time">
+                            <label>Season <span class="required">*</span></label>
+                            <div class="combobox-container w-full relative" id="combo-season">
+                                <input type="text" autocomplete="off" name="TKL Season" required
+                                    placeholder="Type or select season...">
+                                <i data-feather="chevron-down" class="combo-icon"></i>
+                                <ul class="combo-dropdown" style="display: none;"></ul>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Costing ReadyTime <span class="required">*</span></label>
+                            <input type="date" name="Costing_RD" required>
                         </div>
                     </div>
-                    <div class="grid-2 mt-4">
-                        <div class="input-group">
-                            <label>Meeting Notes</label>
-                            <textarea id="meeting-notes-brainstorming" placeholder="Discussed critical points..."
-                                rows="3"></textarea>
+
+                    <div class="input-group mt-4">
+                        <label>Block Details</label>
+                        <textarea name="Block Details" placeholder="Enter block details here..." rows="3"></textarea>
+                    </div>
+
+                    <div class="input-group mt-4">
+                        <label>Remarks</label>
+                        <textarea name="Remarks" placeholder="Enter detailed remarks here..." rows="4"></textarea>
+                    </div>
+
+                    <div class="input-group mt-4">
+                        <label>CADs Attachment</label>
+                        <div class="upload-zone" id="upload-zone" style="cursor:pointer;">
+                            <i data-feather="upload-cloud" class="upload-icon"></i>
+                            <p class="upload-text"><strong id="upload-label">Click to upload CAD file</strong> or drag
+                                and
+                                drop</p>
+                            <p class="upload-subtext" id="upload-subtext">DXF, DWG or PDF (Max 50MB)</p>
+
+                            <input type="file" id="cad-file" style="display:none" accept=".dxf,.dwg,.pdf">
+
+                            <div class="or-divider" onclick="event.stopPropagation()"><span>OR</span></div>
+                            <input type="text" id="cad-url" name="Attachment_URL" class="url-input"
+                                placeholder="Paste CAD URL/Link" onclick="event.stopPropagation()">
                         </div>
-                        <div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Main Fabric -->
+                <section class="form-section mt-4">
+                    <h2 class="section-title">
+                        <div class="icon-circle text-blue"><i data-feather="package"></i></div>
+                        Step 2: Main Fabric
+                    </h2>
+                    <div class="input-group mb-4">
+                        <label>Fabric Origin</label>
+                        <div class="button-group-tabs" id="fabric-tabs">
+                            <button type="button" class="tab-btn active" data-target="fabric-cdl"><i
+                                    data-feather="check-circle" class="sm-icon"></i> CDL</button>
+                            <button type="button" class="tab-btn" data-target="fabric-external">External</button>
+                        </div>
+                    </div>
+
+                    <div id="fabric-cdl-container" class="mt-4">
+                        <div class="grid-2">
                             <div class="input-group">
-                                <label>Assign Attendees (Search or type email)</label>
-                                <div class="combobox-container w-full relative" id="combo-attendees">
-                                    <input type="text" autocomplete="off" id="attendees-search-input"
-                                        placeholder="Type name or email, press Enter...">
-                                    <i data-feather="search" class="combo-icon"></i>
+                                <label>Select CDL Fabric</label>
+                                <div class="combobox-container w-full relative" id="combo-cdl">
+                                    <input type="text" autocomplete="off" name="Main Fabric CDL"
+                                        placeholder="Type or select CDL fabric...">
+                                    <i data-feather="chevron-down" class="combo-icon"></i>
                                     <ul class="combo-dropdown" style="display: none;"></ul>
                                 </div>
-                                <button type="button" id="add-attendees-custom-btn" class="btn-outline-blue mt-2"
-                                    style="width:100%; justify-content:center; display:none;">+ Add Typed Email</button>
                             </div>
+                            <div class="input-group">
+                                <label>Fabric Header</label>
+                                <input type="text" id="fabric-cdl-header" placeholder="Enter Header...">
+                            </div>
+                        </div>
+                    </div>
 
-                            <div class="input-group mt-2">
-                                <label>Selected Attendees:<span class="required">*</span></label>
-                                <div id="attendees-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
-                                    <!-- Tags injected here -->
+                    <div id="fabric-external-container" class="mt-4" style="display: none;">
+                        <div class="input-group">
+                            <label>External Fabric Details</label>
+                            <input type="text" id="fabric-external-input"
+                                placeholder="Type supplier and fabric composition...">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: Meeting -->
+                <section class="form-section mt-4">
+                    <h2 class="section-title">
+                        <div class="icon-circle text-blue"><i data-feather="users"></i></div>
+                        Step 3: Meeting Strategy
+                    </h2>
+
+                    <div class="input-group mb-4">
+                        <label>Meeting Type</label>
+                        <div class="button-group-tabs" id="meeting-tabs">
+                            <button type="button" class="tab-btn active" data-target="meeting-brainstorming"><i
+                                    data-feather="check-circle" class="sm-icon"></i> Brainstorming</button>
+                            <button type="button" class="tab-btn" data-target="meeting-direct">Direct</button>
+                        </div>
+                    </div>
+
+                    <div id="meeting-brainstorming-container" class="mt-4">
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <label>Meeting Date <span class="required">*</span></label>
+                                <input type="date" id="meeting-date" name="Meeting Date">
+                            </div>
+                            <div class="input-group">
+                                <label>Meeting Time <span class="required">*</span></label>
+                                <input type="time" id="meeting-time" name="Meeting Time">
+                            </div>
+                        </div>
+                        <div class="grid-2 mt-4">
+                            <div class="input-group">
+                                <label>Meeting Notes</label>
+                                <textarea id="meeting-notes-brainstorming" placeholder="Discussed critical points..."
+                                    rows="3"></textarea>
+                            </div>
+                            <div>
+                                <div class="input-group">
+                                    <label>Assign Attendees (Search or type email)</label>
+                                    <div class="combobox-container w-full relative" id="combo-attendees">
+                                        <input type="text" autocomplete="off" id="attendees-search-input"
+                                            placeholder="Type name or email, press Enter...">
+                                        <i data-feather="search" class="combo-icon"></i>
+                                        <ul class="combo-dropdown" style="display: none;"></ul>
+                                    </div>
+                                    <button type="button" id="add-attendees-custom-btn" class="btn-outline-blue mt-2"
+                                        style="width:100%; justify-content:center; display:none;">+ Add Typed
+                                        Email</button>
                                 </div>
-                                <input type="hidden" id="attendees-hidden-input" name="Meeting attendees">
+
+                                <div class="input-group mt-2">
+                                    <label>Selected Attendees:<span class="required">*</span></label>
+                                    <div id="attendees-tags"
+                                        class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
+                                        <!-- Tags injected here -->
+                                    </div>
+                                    <input type="hidden" id="attendees-hidden-input" name="Meeting attendees">
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <div id="meeting-direct-container" class="mt-4" style="display: none;">
+                        <div class="input-group">
+                            <!-- Direct meeting notes removed per request -->
+                            <p class="text-muted" style="margin-top: 10px; font-style: italic; color: #64748b;">Direct
+                                execution chosen. No meeting attendees or notes required.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 4: Assignment -->
+                <section class="form-section mt-4 pb-24">
+                    <h2 class="section-title">
+                        <div class="icon-circle text-blue"><i data-feather="user-plus"></i></div>
+                        Step 4: Assignment & Status
+                    </h2>
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <label>Assign PL (Search or type email)</label>
+                            <div class="combobox-container w-full relative" id="combo-pl">
+                                <input type="text" autocomplete="off" id="pl-search-input"
+                                    placeholder="Type name or email, press Enter to add...">
+                                <i data-feather="search" class="combo-icon"></i>
+                                <ul class="combo-dropdown" style="display: none;"></ul>
+                            </div>
+                            <button type="button" id="add-pl-custom-btn" class="btn-outline-blue mt-2"
+                                style="width:100%; justify-content:center; display:none;">+ Add Typed Email</button>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Selected Assignees (PL):<span class="required">*</span></label>
+                            <div id="pl-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
+                                <!-- Tags injected here -->
+                            </div>
+                            <input type="hidden" id="pl-hidden-input" name="PL_Name">
+                        </div>
+
+                        <div class="input-group mt-2">
+                            <label>Assign Accessory (Search or type email)</label>
+                            <div class="combobox-container w-full relative" id="combo-accessory">
+                                <input type="text" autocomplete="off" id="accessory-search-input"
+                                    placeholder="Type name or email, press Enter to add...">
+                                <i data-feather="search" class="combo-icon"></i>
+                                <ul class="combo-dropdown" style="display: none;"></ul>
+                            </div>
+                        </div>
+
+                        <div class="input-group mt-2">
+                            <label>Selected Accessory:</label>
+                            <div id="accessory-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
+                                <!-- Tags injected here -->
+                            </div>
+                            <input type="hidden" id="accessory-hidden-input" name="Accessory_Name">
+                        </div>
+
+                        <div class="input-group mt-4" style="grid-column: 1 / -1;">
+                            <label>Current Status</label>
+                            <div class="status-indicator" id="dynamic-status-display">
+                                Awaiting Meeting
+                            </div>
+                            <input type="hidden" id="dynamic-status-input" name="Status" value="Awaiting Meeting">
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+        <!-- Calendar View Section -->
+        <div class="calendar-section" id="calendar-section"
+            style="display: none; margin-bottom: 32px; background: white; padding: 24px; border-radius: 8px; box-shadow: var(--shadow-sm);">
+            <div class="calendar-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <button class="btn-primary" id="cal-prev-btn"
+                    style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">&lt;
+                    Previous</button>
+
+                <div style="text-align: center;">
+                    <h2 id="cal-month-title" style="margin: 0; font-size: 20px;">Month Year</h2>
+                    <div id="cal-total-requests"
+                        style="font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Total: 0
+                    </div>
                 </div>
 
-                <div id="meeting-direct-container" class="mt-4" style="display: none;">
-                    <div class="input-group">
-                        <!-- Direct meeting notes removed per request -->
-                        <p class="text-muted" style="margin-top: 10px; font-style: italic; color: #64748b;">Direct
-                            execution chosen. No meeting attendees or notes required.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 4: Assignment -->
-            <section class="form-section mt-4 pb-24">
-                <h2 class="section-title">
-                    <div class="icon-circle text-blue"><i data-feather="user-plus"></i></div>
-                    Step 4: Assignment & Status
-                </h2>
-                <div class="grid-2">
-                    <div class="input-group">
-                        <label>Assign PL (Search or type email)</label>
-                        <div class="combobox-container w-full relative" id="combo-pl">
-                            <input type="text" autocomplete="off" id="pl-search-input"
-                                placeholder="Type name or email, press Enter to add...">
-                            <i data-feather="search" class="combo-icon"></i>
-                            <ul class="combo-dropdown" style="display: none;"></ul>
-                        </div>
-                        <button type="button" id="add-pl-custom-btn" class="btn-outline-blue mt-2"
-                            style="width:100%; justify-content:center; display:none;">+ Add Typed Email</button>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Selected Assignees (PL):<span class="required">*</span></label>
-                        <div id="pl-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
-                            <!-- Tags injected here -->
-                        </div>
-                        <input type="hidden" id="pl-hidden-input" name="PL_Name">
-                    </div>
-
-                    <div class="input-group mt-2">
-                        <label>Assign Accessory (Search or type email)</label>
-                        <div class="combobox-container w-full relative" id="combo-accessory">
-                            <input type="text" autocomplete="off" id="accessory-search-input"
-                                placeholder="Type name or email, press Enter to add...">
-                            <i data-feather="search" class="combo-icon"></i>
-                            <ul class="combo-dropdown" style="display: none;"></ul>
-                        </div>
-                    </div>
-
-                    <div class="input-group mt-2">
-                        <label>Selected Accessory:</label>
-                        <div id="accessory-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
-                            <!-- Tags injected here -->
-                        </div>
-                        <input type="hidden" id="accessory-hidden-input" name="Accessory_Name">
-                    </div>
-
-                    <div class="input-group mt-4" style="grid-column: 1 / -1;">
-                        <label>Current Status</label>
-                        <div class="status-indicator" id="dynamic-status-display">
-                            Awaiting Meeting
-                        </div>
-                        <input type="hidden" id="dynamic-status-input" name="Status" value="Awaiting Meeting">
-                    </div>
-                </div>
-            </section>
-        </form>
-      </div>
-
-      <!-- Calendar View Section -->
-      <div class="calendar-section" id="calendar-section"
-        style="display: none; margin-bottom: 32px; background: white; padding: 24px; border-radius: 8px; box-shadow: var(--shadow-sm);">
-        <div class="calendar-header"
-          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <button class="btn-primary" id="cal-prev-btn" style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">&lt; Previous</button>
-          
-          <div style="text-align: center;">
-             <h2 id="cal-month-title" style="margin: 0; font-size: 20px;">Month Year</h2>
-             <div id="cal-total-requests" style="font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Total: 0</div>
-          </div>
-
-          <button class="btn-primary" id="cal-next-btn" style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">Next &gt;</button>
+                <button class="btn-primary" id="cal-next-btn"
+                    style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">Next
+                    &gt;</button>
+            </div>
+            <div
+                style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--text-muted); padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+            <div id="calendar-grid"
+                style="display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 100px; gap: 8px; text-align: left;">
+                <!-- Calendar cells rendered here via JS -->
+            </div>
         </div>
-        <div
-          style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--text-muted); padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
-          <div>Sun</div>
-          <div>Mon</div>
-          <div>Tue</div>
-          <div>Wed</div>
-          <div>Thu</div>
-          <div>Fri</div>
-          <div>Sat</div>
-        </div>
-        <div id="calendar-grid"
-          style="display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 100px; gap: 8px; text-align: left;">
-          <!-- Calendar cells rendered here via JS -->
-        </div>
-      </div>
     </main>
 
     <!-- Calendar Day Requests Modal -->
     <div class="modal" id="calendar-day-modal"
-      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-      <div class="card"
-        style="width: 400px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
-        <h3 id="calendar-day-title" style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-          Requests for Date</h3>
-        <div id="calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
-          <!-- Populated via JS -->
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="card"
+            style="width: 400px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+            <h3 id="calendar-day-title"
+                style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                Requests for Date</h3>
+            <div id="calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
+                <!-- Populated via JS -->
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn-outline-blue" id="close-calendar-day-btn"
+                    style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
+            </div>
         </div>
-        <div style="display: flex; justify-content: flex-end;">
-          <button class="btn-outline-blue" id="close-calendar-day-btn" style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
-        </div>
-      </div>
     </div>
 
     <!-- Details Modal -->
     <div class="modal" id="details-modal"
-      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-      <div class="card"
-        style="width: 500px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
-        <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Request Details</h3>
-        <div id="details-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
-          <!-- Populated via JS -->
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+        <div class="card"
+            style="width: 500px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+            <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Request
+                Details</h3>
+            <div id="details-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
+                <!-- Populated via JS -->
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn-outline-blue" id="close-details-btn"
+                    style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
+            </div>
         </div>
-        <div style="display: flex; justify-content: flex-end;">
-          <button class="btn-outline-blue" id="close-details-btn" style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
-        </div>
-      </div>
     </div>
 
     <!-- Floating Sticky Footer -->
@@ -1279,7 +1297,6 @@
             </button>
         </div>
     </div>
-
     <!-- Initialization via Feather Icons -->
     <script>
         feather.replace();
@@ -1303,6 +1320,7 @@
         let selectedPLs = [];
         let selectedAccessories = [];
         let selectedAttendees = [];
+        let selectedCadFile = null;
         let lastCNumberFromSheet = null;
         let isSubmitting = false; // Sécurité anti-double clic et multi-utilisateur
 
@@ -1315,6 +1333,8 @@
             setupNavigation();
             await loadCloudData();
             setupCNumber();
+            setupCadAttachment();
+            setupNoPastDateConstraints();
 
             setupCombobox('combo-customer', 'customer');
             setupCombobox('combo-department', 'department');
@@ -1329,6 +1349,123 @@
             setupMeetingTabs();
         });
 
+        function getLocalTodayIsoDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function setupNoPastDateConstraints() {
+            const todayIso = getLocalTodayIsoDate();
+            document.querySelectorAll('input[type="date"]').forEach((dateInput) => {
+                dateInput.min = todayIso;
+            });
+        }
+
+        function setupCadAttachment() {
+            const uploadZone = document.getElementById("upload-zone");
+            const fileInput = document.getElementById("cad-file");
+            const urlInput = document.getElementById("cad-url");
+            const uploadLabel = document.getElementById("upload-label");
+            const uploadSubtext = document.getElementById("upload-subtext");
+            if (!uploadZone || !fileInput || !urlInput || !uploadLabel || !uploadSubtext) return;
+
+            const defaultLabel = "Click to upload CAD file";
+            const maxCadFileMb = 50;
+            const defaultSubtext = `DXF, DWG or PDF (Max ${maxCadFileMb}MB)`;
+
+            const setFromFile = (file) => {
+                if (!file) {
+                    selectedCadFile = null;
+                    uploadLabel.innerText = defaultLabel;
+                    uploadSubtext.innerText = defaultSubtext;
+                    return true;
+                }
+                const maxBytes = maxCadFileMb * 1024 * 1024;
+                if (file.size > maxBytes) {
+                    selectedCadFile = null;
+                    uploadLabel.innerText = "File too large";
+                    uploadSubtext.innerText = `Maximum size is ${maxCadFileMb}MB.`;
+                    fileInput.value = "";
+                    return false;
+                }
+
+                const allowedExt = new Set(["dxf", "dwg", "pdf", "zip"]);
+                const parts = String(file.name || "").split(".");
+                const fileExt = parts.length > 1 ? parts.pop().toLowerCase() : "";
+                const extOk = !fileExt || allowedExt.has(fileExt);
+                const mimeOk = !file.type || /(pdf|autocad|cad|dwg|dxf|zip)/i.test(file.type);
+
+                uploadLabel.innerText = "Selected: " + file.name;
+                uploadSubtext.innerText = extOk || mimeOk
+                    ? "File ready for upload"
+                    : "Unrecognized type, but upload will continue";
+                selectedCadFile = file;
+                return true;
+            };
+
+            uploadZone.addEventListener("click", (e) => {
+                if (e.target && (e.target.closest("#cad-url") || e.target.closest(".or-divider"))) return;
+                fileInput.click();
+            });
+
+            fileInput.addEventListener("change", () => {
+                const file = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+                const ok = setFromFile(file);
+                if (ok && file) urlInput.value = "";
+            });
+
+            const preventDefaults = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            };
+
+            ["dragenter", "dragover"].forEach((eventName) => {
+                uploadZone.addEventListener(eventName, (e) => {
+                    preventDefaults(e);
+                    uploadZone.classList.add("drag-active");
+                });
+            });
+            ["dragleave", "drop"].forEach((eventName) => {
+                uploadZone.addEventListener(eventName, (e) => {
+                    preventDefaults(e);
+                    uploadZone.classList.remove("drag-active");
+                });
+            });
+
+            uploadZone.addEventListener("drop", (e) => {
+                const droppedFiles = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files : null;
+                const file = droppedFiles && droppedFiles.length > 0 ? droppedFiles[0] : null;
+                if (!file) return;
+                const ok = setFromFile(file);
+                if (!ok) return;
+                // Keep dropped file in memory for submit (safer than forcing fileInput.files across browsers).
+                urlInput.value = "";
+            });
+
+            urlInput.addEventListener("input", () => {
+                const urlValue = urlInput.value.trim();
+                if (!urlValue) return;
+                selectedCadFile = null;
+                fileInput.value = "";
+                uploadLabel.innerText = "CAD URL added";
+                uploadSubtext.innerText = "Link will be saved as attachment";
+            });
+
+            urlInput.addEventListener("paste", () => {
+                setTimeout(() => {
+                    const pasted = urlInput.value.trim();
+                    if (!pasted) return;
+                    selectedCadFile = null;
+                    fileInput.value = "";
+                    uploadLabel.innerText = "CAD URL added";
+                    uploadSubtext.innerText = "Link pasted successfully";
+                }, 0);
+            });
+        }
+
         // --- NAVBAR TOGGLE & CALENDAR JS ---
 
         function setupNavigation() {
@@ -1338,7 +1475,7 @@
             const calendarSection = document.getElementById("calendar-section");
             const footer = document.getElementById("main-footer");
 
-            if(navNewRequest && navCalendar) {
+            if (navNewRequest && navCalendar) {
                 navNewRequest.addEventListener("click", (e) => {
                     e.preventDefault();
                     navNewRequest.classList.add("active");
@@ -1356,14 +1493,14 @@
                     footer.style.display = "none";
                     calendarSection.style.display = "block";
 
-                    if(!calendarLoaded) {
+                    if (!calendarLoaded) {
                         await fetchCalendarData();
                     } else {
                         renderCalendar();
                     }
                 });
             }
-            
+
             // Buttons calendar
             document.getElementById('cal-prev-btn')?.addEventListener('click', () => {
                 calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
@@ -1398,6 +1535,15 @@
             return isNaN(fallback) ? null : fallback;
         };
 
+        const formatDateOnly = (dateValue) => {
+            const parsed = globalParseSheetDate(dateValue);
+            if (!parsed) return dateValue || '-';
+            const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+            const dd = String(parsed.getDate()).padStart(2, '0');
+            const yyyy = parsed.getFullYear();
+            return `${mm} - ${dd} - ${yyyy}`;
+        };
+
         async function fetchCalendarData() {
             const grid = document.getElementById("calendar-grid");
             grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;">⏳ Loading calendar data from Google Sheets...</div>';
@@ -1405,7 +1551,7 @@
                 // Fetching all rows via the standard techpack GET endpoint
                 const response = await fetch(APPS_SCRIPT_URL);
                 const data = await response.json();
-                if(data && !data.error) {
+                if (data && !data.error) {
                     requestsRows = data;
                     calendarLoaded = true;
                     renderCalendar();
@@ -1434,7 +1580,7 @@
             let monthTotal = 0;
             requestsRows.forEach(row => {
                 // Determine calendar plot date (using requested date or created date)
-                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate; 
+                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate;
                 const d = globalParseSheetDate(dateRaw);
                 if (d && !isNaN(d)) {
                     if (d.getFullYear() === year && d.getMonth() === month) {
@@ -1489,7 +1635,7 @@
 
                     countBadge.addEventListener('click', () => {
                         const dailyReqs = requestsRows.filter(r => {
-                            const dateRaw = r.Created || r.createdDate || r.Requested_Date || r.requestedDate; 
+                            const dateRaw = r.Created || r.createdDate || r.Requested_Date || r.requestedDate;
                             const rd = globalParseSheetDate(dateRaw);
                             return rd && !isNaN(rd) && rd.getFullYear() === year && rd.getMonth() === month && rd.getDate() === i;
                         });
@@ -1530,7 +1676,7 @@
                                             { label: 'PL Name', value: rowData.PL_Name || rowData.assignee },
                                             { label: 'Accessory', value: rowData.Accessory_Name },
                                             { label: 'Status', value: rowData.Status || rowData.status },
-                                            { label: 'Created Date', value: rowData.Created || rowData.createdDate }
+                                            { label: 'Created Date', value: formatDateOnly(rowData.Created || rowData.createdDate) }
                                         ];
 
                                         detailsContent.innerHTML = displayFields.map(field => {
@@ -1633,10 +1779,20 @@
             const input = container.querySelector('input');
             const dropdown = container.querySelector('.combo-dropdown');
 
+            const addTypedValue = () => {
+                const val = input.value.trim();
+                if (!val) return false;
+                localAddSetting(listKey, val);
+                input.value = val;
+                return true;
+            };
+
             const render = (filter = '') => {
                 dropdown.innerHTML = '';
                 const list = getSavedList(listKey);
                 const filtered = list.filter(item => item.toLowerCase().includes(filter.toLowerCase()));
+                const normalizedFilter = filter.trim().toLowerCase();
+                const exactMatchExists = filtered.some(item => item.toLowerCase() === normalizedFilter);
 
                 filtered.forEach(item => {
                     const li = document.createElement('li');
@@ -1659,7 +1815,33 @@
                     };
                     dropdown.appendChild(li);
                 });
+
+                if (normalizedFilter && !exactMatchExists) {
+                    const addLi = document.createElement('li');
+                    addLi.className = 'combo-item';
+                    addLi.style.fontWeight = '600';
+                    addLi.style.color = 'var(--primary)';
+                    addLi.textContent = `+ Add "${filter.trim()}"`;
+                    addLi.onmousedown = (e) => {
+                        e.preventDefault();
+                        const added = addTypedValue();
+                        if (added) render(input.value);
+                        dropdown.style.display = 'none';
+                    };
+                    dropdown.appendChild(addLi);
+                }
             };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const added = addTypedValue();
+                    if (added) {
+                        render(input.value);
+                        dropdown.style.display = 'none';
+                    }
+                }
+            });
 
             input.onfocus = () => { render(input.value); dropdown.style.display = 'block'; };
             input.oninput = () => render(input.value);
@@ -1934,8 +2116,11 @@
                 const formData = new FormData(form);
                 let fileData = null;
                 const fileInput = document.getElementById("cad-file");
-                if (fileInput && fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
+                const cadUrlInput = document.getElementById("cad-url");
+                const cadUrl = cadUrlInput ? cadUrlInput.value.trim() : "";
+                const fileToUpload = selectedCadFile || (fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null);
+                if (fileToUpload) {
+                    const file = fileToUpload;
                     fileData = await new Promise(r => {
                         const reader = new FileReader();
                         reader.onload = (e) => r({ name: file.name, mimeType: file.type, base64: e.target.result.split(',')[1] });
@@ -1949,7 +2134,7 @@
 
                 const activeMeetingBtn = document.querySelector('#meeting-tabs .active');
                 const isBrainstorm = activeMeetingBtn ? (activeMeetingBtn.dataset.target === "meeting-brainstorming") : false;
-                const meetingDate = isBrainstorm ? (document.getElementsByName("Meeting Date")[0]?.value || "") : new Date().toISOString().split('T')[0];
+                const meetingDate = isBrainstorm ? (document.getElementsByName("Meeting Date")[0]?.value || "") : getLocalTodayIsoDate();
                 const meetingTime = isBrainstorm ? (document.getElementsByName("Meeting Time")[0]?.value || "") : "";
                 const meetingNotes = isBrainstorm ? (document.getElementById("meeting-notes-brainstorming")?.value || "") : "";
 
@@ -1999,15 +2184,42 @@
                     finalAccessories.push(pendingAccessory);
                 }
 
+                if (isBrainstorm && meetingDate) {
+                    const selectedMeetingDate = new Date(meetingDate + "T00:00:00");
+                    const todayStart = new Date();
+                    todayStart.setHours(0, 0, 0, 0);
+                    if (!isNaN(selectedMeetingDate.getTime()) && selectedMeetingDate < todayStart) {
+                        statusText.innerText = "Error: Meeting Date cannot be in the past.";
+                        statusText.style.color = "#ef4444";
+                        isSubmitting = false;
+                        btn.classList.remove("btn-loading");
+                        btn.disabled = false;
+                        btn.innerHTML = "Submit Request";
+                        return;
+                    }
+                }
+
                 const rawRd = formData.get("Costing_RD");
                 let formattedRd = "";
                 if (rawRd) {
+                    const selected = new Date(rawRd + "T00:00:00");
+                    const todayStart = new Date();
+                    todayStart.setHours(0, 0, 0, 0);
+                    if (!isNaN(selected.getTime()) && selected < todayStart) {
+                        statusText.innerText = "Error: Costing Ready Date cannot be in the past.";
+                        statusText.style.color = "#ef4444";
+                        isSubmitting = false;
+                        btn.classList.remove("btn-loading");
+                        btn.disabled = false;
+                        btn.innerHTML = "Submit Request";
+                        return;
+                    }
                     const [y, m, d] = rawRd.split('-');
                     formattedRd = `${m}/${d}/${y}`;
                 }
 
                 const currentStatus = document.getElementById("dynamic-status-input")?.value || "Pending";
-                
+
                 const payload = {
                     // "C_Number": currentIdInUI,
                     "Requested_Date": formatted,
@@ -2023,10 +2235,11 @@
                     "Fabric Supplier": isCDL ? "CDL" : "External",
                     "Fabric Header": isCDL ? (document.getElementById("fabric-cdl-header")?.value || "") : "",
                     "Status": currentStatus,
-                    "Attachment": fileData ? fileData.name : "None",
+                    "Attachment": fileData ? fileData.name : (cadUrl || "None"),
                     "cadFileData": fileData,
                     "PL_Name": finalPLs.join(", "),
                     "Accessory_Name": finalAccessories.join(", "),
+                    "Created By": localStorage.getItem('currentUser') || "",
                     "Meeting Date": meetingDate,
                     "Meeting Time": meetingTime,
                     "Meeting Attendees": finalAttendees.join(", "),
@@ -2042,22 +2255,29 @@
                 }
 
                 // 3. Envoi définitif
-                await fetch(APPS_SCRIPT_URL, {
+                const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // On le remet pour éviter l'erreur rouge
                     cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify(payload)
                 });
-                // incrementCNumberLocally();
+
+                let responseData = null;
+                try {
+                    const responseText = await response.text();
+                    responseData = responseText ? JSON.parse(responseText) : null;
+                } catch (parseError) {
+                    responseData = null;
+                }
+
+                const createdCNumber = responseData && responseData.cNumber ? String(responseData.cNumber).trim() : "";
+                const successMessage = createdCNumber
+                    ? `Request sent successfully!\nC_Number: ${createdCNumber}`
+                    : "Request sent successfully!";
+
                 statusText.innerText = "Request sent successfully!";
                 statusText.style.color = "#10b981";
-
-                setTimeout(() => {
-                    window.location.href = "https://awaiting-meet.vercel.app/";
-                }, 1500);
+                alert(successMessage);
+                window.location.href = "https://awaiting-meet.vercel.app/";
 
             } catch (error) {
                 isSubmitting = false;
