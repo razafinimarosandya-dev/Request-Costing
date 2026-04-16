@@ -2242,7 +2242,8 @@
                     "Meeting Date": meetingDate,
                     "Meeting Time": meetingTime,
                     "Meeting Attendees": finalAttendees.join(", "),
-                    "Meeting Notes": meetingNotes
+                    "Meeting Notes": meetingNotes,
+                    "appLink": "https://costing-home.vercel.app/"
                 };
 
                 if (currentStatus === "Awaiting Techpack") {
@@ -2276,7 +2277,7 @@
                 statusText.innerText = "Request sent successfully!";
                 statusText.style.color = "#10b981";
                 alert(successMessage);
-                window.location.href = "https://awaiting-meet.vercel.app/";
+                window.location.href = "https://costing-home.vercel.app/";
 
             } catch (error) {
                 isSubmitting = false;
