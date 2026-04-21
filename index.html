@@ -288,6 +288,105 @@
         object-fit: cover;
     }
 
+    /* User Profile Popup */
+    .profile-popup {
+        position: absolute;
+        top: 70px;
+        right: 24px;
+        width: 280px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        border: 1px solid #f1f5f9;
+        z-index: 2000;
+        display: none;
+        padding: 24px;
+    }
+
+    .profile-popup.visible {
+        display: block;
+        animation: slideDown 0.2s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .profile-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 20px;
+    }
+
+    .profile-avatar-large {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        margin-bottom: 12px;
+        border: 2px solid #eff6ff;
+        object-fit: cover;
+    }
+
+    .profile-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .profile-email {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .profile-role-badge {
+        margin-top: 10px;
+        padding: 4px 12px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 20px;
+        text-transform: uppercase;
+    }
+
+    .profile-footer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .sign-out-btn {
+        width: 100%;
+        padding: 10px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        color: #ef4444;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .sign-out-btn:hover {
+        background: #fef2f2;
+        border-color: #fca5a5;
+    }
+
     /* Main Container */
     .main-container {
         max-width: 1000px;
@@ -469,6 +568,69 @@
         background-repeat: no-repeat;
         background-position: right 1rem center;
         background-size: 1em;
+    }
+
+    .fabric-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .fabric-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 760px;
+    }
+
+    .fabric-table th,
+    .fabric-table td {
+        border-bottom: 1px solid var(--border-color);
+        padding: 0.5rem;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .fabric-table th {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        background: #f8fafc;
+        font-weight: 600;
+    }
+
+    .fabric-table td input,
+    .fabric-table td select {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .fabric-opt-chip {
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-radius: 6px;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    .fabric-row-remove-btn {
+        border: 1px solid #fecaca;
+        background: #fff1f2;
+        color: #dc2626;
+        border-radius: 6px;
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: 700;
+        line-height: 1;
     }
 
     /* Upload Zone */
@@ -917,6 +1079,7 @@
             transform: rotate(360deg);
         }
     }
+
 </style>
 
 <body>
@@ -930,356 +1093,381 @@
             <ul class="nav-links">
                 <li><a href="https://costing-home.vercel.app/">Home</a></li>
                 <li><a href="#" id="nav-new-request" class="active">New</a></li>
-                <li><a href="https://revised-costing.vercel.app/" id="nav-revised">Revised</a></li>
+                <li><a href="#" id="nav-revised">Revised</a></li>
                 <li><a href="#" id="nav-calendar">Calendar view</a></li>
             </ul>
         </div>
         <div class="nav-right">
             <div class="search-bar">
                 <i data-feather="search"></i>
-                <input type="text" placeholder="Search orders...">
+                <input type="text" placeholder="Search Style...">
             </div>
             <div class="profile-pic">
-                <img src="https://ui-avatars.com/api/?name=User&background=ed8936&color=fff" alt="User" />
+                <img src="https://i.pravatar.cc/150?u=request_user" alt="User Profile" id="userAvatar">
+                <!-- Profile Popup -->
+                <div class="profile-popup" id="profilePopup">
+                    <div class="profile-header">
+                        <img src="https://i.pravatar.cc/150?u=request_user" class="profile-avatar-large"
+                            id="popupAvatar" />
+                        <div class="profile-name" id="popupName">Guest User</div>
+                        <div class="profile-email" id="popupEmail">guest@example.com</div>
+                        <div class="profile-role-badge" id="popupRole">REPORTER</div>
+                    </div>
+                    <div class="profile-footer">
+                        <button class="sign-out-btn" id="signOutBtn">
+                            <i data-feather="log-out" style="width: 14px;"></i>
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Container -->
     <main class="main-container">
-        <div id="form-section">
-            <!-- Header Section -->
-            <header class="page-header">
-                <div class="title-area">
-                    <span class="workflow-badge">
-                        <i data-feather="plus-circle" class="sm-icon"></i> NEW WORKFLOW
-                    </span>
-                    <h1>Create New Costing Request</h1>
-                    <p>Initiate a comprehensive manufacturing costing analysis and production plan.</p>
-                </div>
-                <div class="serial-id-box">
-                    <span class="serial-label">C_Number</span>
-                    <span class="serial-value"><i data-feather="cpu" class="sm-icon"></i> <span
-                            id="display-id"></span></span>
-                </div>
-            </header>
+      <div id="form-section">
+        <!-- Header Section -->
+        <header class="page-header">
+            <div class="title-area">
+                <span class="workflow-badge">
+                    <i data-feather="plus-circle" class="sm-icon"></i> NEW WORKFLOW
+                </span>
+                <h1>Create New Costing Request</h1>
+                <p>Initiate a comprehensive manufacturing costing analysis and production plan.</p>
+            </div>
+            <div class="serial-id-box">
+                <span class="serial-label">C_Number</span>
+                <span class="serial-value"><i data-feather="cpu" class="sm-icon"></i> <span
+                        id="display-id"></span></span>
+            </div>
+        </header>
 
-            <form id="costing-form">
-                <!-- Section 1: Core Details -->
-                <section class="form-section">
-                    <h2 class="section-title">
-                        <div class="icon-circle text-blue"><i data-feather="info"></i></div>
-                        Step 1: Core Details
-                    </h2>
+        <form id="costing-form">
+            <!-- Section 1: Core Details -->
+            <section class="form-section">
+                <h2 class="section-title">
+                    <div class="icon-circle text-blue"><i data-feather="info"></i></div>
+                    Step 1: Core Details
+                </h2>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Reference <span class="required">*</span></label>
+                        <input type="text" name="Reference" required placeholder="Enter reference...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Customer Type <span class="required">*</span></label>
+                        <select id="customer-type" name="Customer Type" required>
+                            <option value="">Select customer type...</option>
+                            <option value="PIPELINE">PIPELINE</option>
+                            <option value="INTERNAL">INTERNAL</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" id="internal-customer-group" style="display: none;">
+                        <label>Customer <span class="required">*</span></label>
+                        <div class="combobox-container w-full relative" id="combo-customer">
+                            <input type="text" autocomplete="off" name="Customer"
+                                placeholder="Type or select customer...">
+                            <i data-feather="chevron-down" class="combo-icon"></i>
+                            <ul class="combo-dropdown" style="display: none;"></ul>
+                        </div>
+                    </div>
+
+                    <div class="input-group" id="pipeline-customer-group" style="display: none;">
+                        <label>Customer <span class="required">*</span></label>
+                        <input type="text" id="pipeline-customer-input" placeholder="Enter pipeline customer...">
+                    </div>
+                    <div class="input-group">
+                        <label>Customer Department <span class="required">*</span></label>
+                        <div class="combobox-container w-full relative" id="combo-department">
+                            <input type="text" autocomplete="off" name="Customer Department" required
+                                placeholder="Type or select department...">
+                            <i data-feather="chevron-down" class="combo-icon"></i>
+                            <ul class="combo-dropdown" style="display: none;"></ul>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Sample Type <span class="required">*</span></label>
+                        <input type="text" name="Sample Type" value="Initial" required readonly class="bg-gray-50">
+                    </div>
+                    <div class="input-group">
+                        <label>Season <span class="required">*</span></label>
+                        <div class="combobox-container w-full relative" id="combo-season">
+                            <input type="text" autocomplete="off" name="TKL Season" required
+                                placeholder="Type or select season...">
+                            <i data-feather="chevron-down" class="combo-icon"></i>
+                            <ul class="combo-dropdown" style="display: none;"></ul>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Costing Expected Date <span class="required">*</span></label>
+                        <input type="date" name="Costing_RD" required>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Section 2: Main Fabric -->
+            <section class="form-section mt-4">
+                <h2 class="section-title">
+                    <div class="icon-circle text-blue"><i data-feather="package"></i></div>
+                    Step 2: Main Fabric
+                </h2>
+                <div class="input-group mb-4">
+                    <label>Type <span class="required">*</span></label>
+                    <select id="fabric-type-select" required>
+                        <option value="">Select type...</option>
+                        <option value="CDL">CDL</option>
+                        <option value="External">External</option>
+                    </select>
+                </div>
+
+                <div id="fabric-addons-section" style="display:none;">
+                    <div class="input-group mb-4">
+                        <button type="button" id="add-fabric-row-btn" class="btn-outline-blue">+ Add Ons</button>
+                    </div>
+
+                    <div class="fabric-table-wrapper">
+                        <table class="fabric-table">
+                            <thead>
+                                <tr>
+                                    <th>opt</th>
+                                    <th>Type</th>
+                                    <th>Fabric</th>
+                                    <th>Header</th>
+                                    <th>GMs</th>
+                                    <th>Composition</th>
+                                    <th>Width</th>
+                                <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fabric-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Section 3: Additional Details -->
+            <section class="form-section mt-4">
+                <h2 class="section-title">
+                    <div class="icon-circle text-blue"><i data-feather="file-text"></i></div>
+                    Step 3: Additional Details
+                </h2>
+
+                <div class="input-group mt-4">
+                    <label>Block Details</label>
+                    <textarea name="Block Details" placeholder="Enter block details here..." rows="3"></textarea>
+                </div>
+
+                <div class="input-group mt-4">
+                    <label>Remarks</label>
+                    <textarea name="Remarks" placeholder="Enter detailed remarks here..." rows="4"></textarea>
+                </div>
+
+                <div class="input-group mt-4">
+                    <label>CADs Attachment</label>
+                    <div class="upload-zone" id="upload-zone" style="cursor:pointer;">
+                        <i data-feather="upload-cloud" class="upload-icon"></i>
+                        <p class="upload-text"><strong id="upload-label">Click to upload CAD files</strong> or drag and
+                            drop</p>
+                        <p class="upload-subtext" id="upload-subtext">DXF, DWG or PDF (Max 50MB)</p>
+
+                        <input type="file" id="cad-file" style="display:none" accept=".dxf,.dwg,.pdf" multiple>
+
+                        <div class="or-divider" onclick="event.stopPropagation()"><span>OR</span></div>
+                        <input type="text" id="cad-url" name="Attachment_URL" class="url-input"
+                            placeholder="Paste CAD URL/Link" onclick="event.stopPropagation()">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Meeting -->
+            <section class="form-section mt-4">
+                <h2 class="section-title">
+                    <div class="icon-circle text-blue"><i data-feather="users"></i></div>
+                    Step 4: Meeting Strategy
+                </h2>
+
+                <div class="input-group mb-4">
+                    <label>Meeting Type</label>
+                    <div class="button-group-tabs" id="meeting-tabs">
+                        <button type="button" class="tab-btn active" data-target="meeting-direct">Direct</button>
+                        <button type="button" class="tab-btn" data-target="meeting-brainstorming"><i
+                                data-feather="check-circle" class="sm-icon"></i> Handing over</button>
+                    </div>
+                </div>
+
+                <div id="meeting-brainstorming-container" class="mt-4" style="display: none;">
                     <div class="grid-2">
                         <div class="input-group">
-                            <label>Reference <span class="required">*</span></label>
-                            <input type="text" name="Reference" required placeholder="Enter reference...">
-                        </div>
-
-                        <div class="input-group">
-                            <label>Customer <span class="required">*</span></label>
-                            <div class="combobox-container w-full relative" id="combo-customer">
-                                <input type="text" autocomplete="off" name="Customer" required
-                                    placeholder="Type or select customer...">
-                                <i data-feather="chevron-down" class="combo-icon"></i>
-                                <ul class="combo-dropdown" style="display: none;"></ul>
-                            </div>
+                            <label>Meeting Date <span class="required">*</span></label>
+                            <input type="date" id="meeting-date" name="Meeting Date">
                         </div>
                         <div class="input-group">
-                            <label>Customer Department <span class="required">*</span></label>
-                            <div class="combobox-container w-full relative" id="combo-department">
-                                <input type="text" autocomplete="off" name="Customer Department" required
-                                    placeholder="Type or select department...">
-                                <i data-feather="chevron-down" class="combo-icon"></i>
-                                <ul class="combo-dropdown" style="display: none;"></ul>
-                            </div>
+                            <label>Meeting Time <span class="required">*</span></label>
+                            <input type="time" id="meeting-time" name="Meeting Time">
                         </div>
-
+                    </div>
+                    <div class="grid-2 mt-4">
                         <div class="input-group">
-                            <label>Sample Type <span class="required">*</span></label>
-                            <input type="text" name="Sample Type" value="Initial" required readonly class="bg-gray-50">
+                            <label>Meeting Notes</label>
+                            <textarea id="meeting-notes-brainstorming" placeholder="Discussed critical points..."
+                                rows="3"></textarea>
                         </div>
-                        <div class="input-group">
-                            <label>Season <span class="required">*</span></label>
-                            <div class="combobox-container w-full relative" id="combo-season">
-                                <input type="text" autocomplete="off" name="TKL Season" required
-                                    placeholder="Type or select season...">
-                                <i data-feather="chevron-down" class="combo-icon"></i>
-                                <ul class="combo-dropdown" style="display: none;"></ul>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label>Costing ReadyTime <span class="required">*</span></label>
-                            <input type="date" name="Costing_RD" required>
-                        </div>
-                    </div>
-
-                    <div class="input-group mt-4">
-                        <label>Block Details</label>
-                        <textarea name="Block Details" placeholder="Enter block details here..." rows="3"></textarea>
-                    </div>
-
-                    <div class="input-group mt-4">
-                        <label>Remarks</label>
-                        <textarea name="Remarks" placeholder="Enter detailed remarks here..." rows="4"></textarea>
-                    </div>
-
-                    <div class="input-group mt-4">
-                        <label>CADs Attachment</label>
-                        <div class="upload-zone" id="upload-zone" style="cursor:pointer;">
-                            <i data-feather="upload-cloud" class="upload-icon"></i>
-                            <p class="upload-text"><strong id="upload-label">Click to upload CAD file</strong> or drag
-                                and
-                                drop</p>
-                            <p class="upload-subtext" id="upload-subtext">DXF, DWG or PDF (Max 50MB)</p>
-
-                            <input type="file" id="cad-file" style="display:none" accept=".dxf,.dwg,.pdf">
-
-                            <div class="or-divider" onclick="event.stopPropagation()"><span>OR</span></div>
-                            <input type="text" id="cad-url" name="Attachment_URL" class="url-input"
-                                placeholder="Paste CAD URL/Link" onclick="event.stopPropagation()">
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Section 2: Main Fabric -->
-                <section class="form-section mt-4">
-                    <h2 class="section-title">
-                        <div class="icon-circle text-blue"><i data-feather="package"></i></div>
-                        Step 2: Main Fabric
-                    </h2>
-                    <div class="input-group mb-4">
-                        <label>Fabric Origin</label>
-                        <div class="button-group-tabs" id="fabric-tabs">
-                            <button type="button" class="tab-btn active" data-target="fabric-cdl"><i
-                                    data-feather="check-circle" class="sm-icon"></i> CDL</button>
-                            <button type="button" class="tab-btn" data-target="fabric-external">External</button>
-                        </div>
-                    </div>
-
-                    <div id="fabric-cdl-container" class="mt-4">
-                        <div class="grid-2">
+                        <div>
                             <div class="input-group">
-                                <label>Select CDL Fabric</label>
-                                <div class="combobox-container w-full relative" id="combo-cdl">
-                                    <input type="text" autocomplete="off" name="Main Fabric CDL"
-                                        placeholder="Type or select CDL fabric...">
-                                    <i data-feather="chevron-down" class="combo-icon"></i>
+                                <label>Assign Attendees (Search or type email)</label>
+                                <div class="combobox-container w-full relative" id="combo-attendees">
+                                    <input type="text" autocomplete="off" id="attendees-search-input"
+                                        placeholder="Type name or email, press Enter...">
+                                    <i data-feather="search" class="combo-icon"></i>
                                     <ul class="combo-dropdown" style="display: none;"></ul>
                                 </div>
+                                <button type="button" id="add-attendees-custom-btn" class="btn-outline-blue mt-2"
+                                    style="width:100%; justify-content:center; display:none;">+ Add Typed Email</button>
                             </div>
-                            <div class="input-group">
-                                <label>Fabric Header</label>
-                                <input type="text" id="fabric-cdl-header" placeholder="Enter Header...">
-                            </div>
-                        </div>
-                    </div>
 
-                    <div id="fabric-external-container" class="mt-4" style="display: none;">
-                        <div class="input-group">
-                            <label>External Fabric Details</label>
-                            <input type="text" id="fabric-external-input"
-                                placeholder="Type supplier and fabric composition...">
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Section 3: Meeting -->
-                <section class="form-section mt-4">
-                    <h2 class="section-title">
-                        <div class="icon-circle text-blue"><i data-feather="users"></i></div>
-                        Step 3: Meeting Strategy
-                    </h2>
-
-                    <div class="input-group mb-4">
-                        <label>Meeting Type</label>
-                        <div class="button-group-tabs" id="meeting-tabs">
-                            <button type="button" class="tab-btn active" data-target="meeting-brainstorming"><i
-                                    data-feather="check-circle" class="sm-icon"></i> Brainstorming</button>
-                            <button type="button" class="tab-btn" data-target="meeting-direct">Direct</button>
-                        </div>
-                    </div>
-
-                    <div id="meeting-brainstorming-container" class="mt-4">
-                        <div class="grid-2">
-                            <div class="input-group">
-                                <label>Meeting Date <span class="required">*</span></label>
-                                <input type="date" id="meeting-date" name="Meeting Date">
-                            </div>
-                            <div class="input-group">
-                                <label>Meeting Time <span class="required">*</span></label>
-                                <input type="time" id="meeting-time" name="Meeting Time">
-                            </div>
-                        </div>
-                        <div class="grid-2 mt-4">
-                            <div class="input-group">
-                                <label>Meeting Notes</label>
-                                <textarea id="meeting-notes-brainstorming" placeholder="Discussed critical points..."
-                                    rows="3"></textarea>
-                            </div>
-                            <div>
-                                <div class="input-group">
-                                    <label>Assign Attendees (Search or type email)</label>
-                                    <div class="combobox-container w-full relative" id="combo-attendees">
-                                        <input type="text" autocomplete="off" id="attendees-search-input"
-                                            placeholder="Type name or email, press Enter...">
-                                        <i data-feather="search" class="combo-icon"></i>
-                                        <ul class="combo-dropdown" style="display: none;"></ul>
-                                    </div>
-                                    <button type="button" id="add-attendees-custom-btn" class="btn-outline-blue mt-2"
-                                        style="width:100%; justify-content:center; display:none;">+ Add Typed
-                                        Email</button>
+                            <div class="input-group mt-2">
+                                <label>Selected Attendees:<span class="required">*</span></label>
+                                <div id="attendees-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
+                                    <!-- Tags injected here -->
                                 </div>
-
-                                <div class="input-group mt-2">
-                                    <label>Selected Attendees:<span class="required">*</span></label>
-                                    <div id="attendees-tags"
-                                        class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
-                                        <!-- Tags injected here -->
-                                    </div>
-                                    <input type="hidden" id="attendees-hidden-input" name="Meeting attendees">
-                                </div>
+                                <input type="hidden" id="attendees-hidden-input" name="Meeting attendees">
                             </div>
                         </div>
-                    </div>
-
-                    <div id="meeting-direct-container" class="mt-4" style="display: none;">
-                        <div class="input-group">
-                            <!-- Direct meeting notes removed per request -->
-                            <p class="text-muted" style="margin-top: 10px; font-style: italic; color: #64748b;">Direct
-                                execution chosen. No meeting attendees or notes required.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Section 4: Assignment -->
-                <section class="form-section mt-4 pb-24">
-                    <h2 class="section-title">
-                        <div class="icon-circle text-blue"><i data-feather="user-plus"></i></div>
-                        Step 4: Assignment & Status
-                    </h2>
-                    <div class="grid-2">
-                        <div class="input-group">
-                            <label>Assign PL (Search or type email)</label>
-                            <div class="combobox-container w-full relative" id="combo-pl">
-                                <input type="text" autocomplete="off" id="pl-search-input"
-                                    placeholder="Type name or email, press Enter to add...">
-                                <i data-feather="search" class="combo-icon"></i>
-                                <ul class="combo-dropdown" style="display: none;"></ul>
-                            </div>
-                            <button type="button" id="add-pl-custom-btn" class="btn-outline-blue mt-2"
-                                style="width:100%; justify-content:center; display:none;">+ Add Typed Email</button>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Selected Assignees (PL):<span class="required">*</span></label>
-                            <div id="pl-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
-                                <!-- Tags injected here -->
-                            </div>
-                            <input type="hidden" id="pl-hidden-input" name="PL_Name">
-                        </div>
-
-                        <div class="input-group mt-2">
-                            <label>Assign Accessory (Search or type email)</label>
-                            <div class="combobox-container w-full relative" id="combo-accessory">
-                                <input type="text" autocomplete="off" id="accessory-search-input"
-                                    placeholder="Type name or email, press Enter to add...">
-                                <i data-feather="search" class="combo-icon"></i>
-                                <ul class="combo-dropdown" style="display: none;"></ul>
-                            </div>
-                        </div>
-
-                        <div class="input-group mt-2">
-                            <label>Selected Accessory:</label>
-                            <div id="accessory-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
-                                <!-- Tags injected here -->
-                            </div>
-                            <input type="hidden" id="accessory-hidden-input" name="Accessory_Name">
-                        </div>
-
-                        <div class="input-group mt-4" style="grid-column: 1 / -1;">
-                            <label>Current Status</label>
-                            <div class="status-indicator" id="dynamic-status-display">
-                                Awaiting Meeting
-                            </div>
-                            <input type="hidden" id="dynamic-status-input" name="Status" value="Awaiting Meeting">
-                        </div>
-                    </div>
-                </section>
-            </form>
-        </div>
-
-        <!-- Calendar View Section -->
-        <div class="calendar-section" id="calendar-section"
-            style="display: none; margin-bottom: 32px; background: white; padding: 24px; border-radius: 8px; box-shadow: var(--shadow-sm);">
-            <div class="calendar-header"
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <button class="btn-primary" id="cal-prev-btn"
-                    style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">&lt;
-                    Previous</button>
-
-                <div style="text-align: center;">
-                    <h2 id="cal-month-title" style="margin: 0; font-size: 20px;">Month Year</h2>
-                    <div id="cal-total-requests"
-                        style="font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Total: 0
                     </div>
                 </div>
 
-                <button class="btn-primary" id="cal-next-btn"
-                    style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">Next
-                    &gt;</button>
-            </div>
-            <div
-                style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--text-muted); padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
-                <div>Sun</div>
-                <div>Mon</div>
-                <div>Tue</div>
-                <div>Wed</div>
-                <div>Thu</div>
-                <div>Fri</div>
-                <div>Sat</div>
-            </div>
-            <div id="calendar-grid"
-                style="display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 100px; gap: 8px; text-align: left;">
-                <!-- Calendar cells rendered here via JS -->
-            </div>
+                <div id="meeting-direct-container" class="mt-4">
+                    <div class="input-group">
+                        <!-- Direct meeting notes removed per request -->
+                        <p class="text-muted" style="margin-top: 10px; font-style: italic; color: #64748b;">Direct
+                            execution chosen. No meeting attendees or notes required.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Assignment -->
+            <section class="form-section mt-4 pb-24">
+                <h2 class="section-title">
+                    <div class="icon-circle text-blue"><i data-feather="user-plus"></i></div>
+                    Step 5: Assignment & Status
+                </h2>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Assign PL (Search or type email)</label>
+                        <div class="combobox-container w-full relative" id="combo-pl">
+                            <input type="text" autocomplete="off" id="pl-search-input"
+                                placeholder="Type name or email, press Enter to add...">
+                            <i data-feather="search" class="combo-icon"></i>
+                            <ul class="combo-dropdown" style="display: none;"></ul>
+                        </div>
+                        <button type="button" id="add-pl-custom-btn" class="btn-outline-blue mt-2"
+                            style="width:100%; justify-content:center; display:none;">+ Add Typed Email</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Selected Assignees (PL):<span class="required">*</span></label>
+                        <div id="pl-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
+                            <!-- Tags injected here -->
+                        </div>
+                        <input type="hidden" id="pl-hidden-input" name="PL_Name">
+                    </div>
+
+                    <div class="input-group mt-2">
+                        <label>Assign Accessory (Search or type email)</label>
+                        <div class="combobox-container w-full relative" id="combo-accessory">
+                            <input type="text" autocomplete="off" id="accessory-search-input"
+                                placeholder="Type name or email, press Enter to add...">
+                            <i data-feather="search" class="combo-icon"></i>
+                            <ul class="combo-dropdown" style="display: none;"></ul>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-2">
+                        <label>Selected Accessory:</label>
+                        <div id="accessory-tags" class="attendees-tags p-2 border rounded bg-gray-50 min-h-40">
+                            <!-- Tags injected here -->
+                        </div>
+                        <input type="hidden" id="accessory-hidden-input" name="Accessory_Name">
+                    </div>
+
+                    <div class="input-group mt-4" style="grid-column: 1 / -1;">
+                        <label>Current Status</label>
+                        <div class="status-indicator" id="dynamic-status-display">
+                            Awaiting Techpack
+                        </div>
+                        <input type="hidden" id="dynamic-status-input" name="Status" value="Awaiting Techpack">
+                    </div>
+                </div>
+            </section>
+        </form>
+      </div>
+
+      <!-- Calendar View Section -->
+      <div class="calendar-section" id="calendar-section"
+        style="display: none; margin-bottom: 32px; background: white; padding: 24px; border-radius: 8px; box-shadow: var(--shadow-sm);">
+        <div class="calendar-header"
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <button class="btn-primary" id="cal-prev-btn" style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">&lt; Previous</button>
+          
+          <div style="text-align: center;">
+             <h2 id="cal-month-title" style="margin: 0; font-size: 20px;">Month Year</h2>
+             <div id="cal-total-requests" style="font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Total: 0</div>
+          </div>
+
+          <button class="btn-primary" id="cal-next-btn" style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--primary);">Next &gt;</button>
         </div>
+        <div
+          style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--text-muted); padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+          <div>Sun</div>
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+        </div>
+        <div id="calendar-grid"
+          style="display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 100px; gap: 8px; text-align: left;">
+          <!-- Calendar cells rendered here via JS -->
+        </div>
+      </div>
     </main>
 
     <!-- Calendar Day Requests Modal -->
     <div class="modal" id="calendar-day-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-        <div class="card"
-            style="width: 400px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
-            <h3 id="calendar-day-title"
-                style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                Requests for Date</h3>
-            <div id="calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
-                <!-- Populated via JS -->
-            </div>
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="btn-outline-blue" id="close-calendar-day-btn"
-                    style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
-            </div>
+      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+      <div class="card"
+        style="width: 400px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+        <h3 id="calendar-day-title" style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+          Requests for Date</h3>
+        <div id="calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
+          <!-- Populated via JS -->
         </div>
+        <div style="display: flex; justify-content: flex-end;">
+          <button class="btn-outline-blue" id="close-calendar-day-btn" style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
+        </div>
+      </div>
     </div>
 
     <!-- Details Modal -->
     <div class="modal" id="details-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-        <div class="card"
-            style="width: 500px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
-            <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Request
-                Details</h3>
-            <div id="details-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
-                <!-- Populated via JS -->
-            </div>
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="btn-outline-blue" id="close-details-btn"
-                    style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
-            </div>
+      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+      <div class="card"
+        style="width: 500px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+        <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Request Details</h3>
+        <div id="details-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
+          <!-- Populated via JS -->
         </div>
+        <div style="display: flex; justify-content: flex-end;">
+          <button class="btn-outline-blue" id="close-details-btn" style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
+        </div>
+      </div>
     </div>
 
     <!-- Floating Sticky Footer -->
@@ -1299,9 +1487,101 @@
     </div>
     <!-- Initialization via Feather Icons -->
     <script>
-        feather.replace();
+        // --- SÉCURITÉ CONNEXION ---
+        const LOGIN_PAGE_URL = "index 16.html";
+        const REMEMBERED_USER_KEY = "garmentcost_remembered_user";
 
+        function checkAuth() {
+            const user = localStorage.getItem(REMEMBERED_USER_KEY);
+            if (!user) {
+                window.location.href = LOGIN_PAGE_URL;
+                return false;
+            }
+            return true;
+        }
+        if (!checkAuth()) {
+            // Arrêter l'exécution si non connecté
+            throw new Error("Authentification requise");
+        }
+
+        // --- CONFIGURATION ---
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec";
+
+        // Identity Constants
+        const ADMIN_EMAIL = "tropicfabiosandy@gmail.com";
+        const STAKEHOLDER_MAP = {
+            "fjumoorty@cdl-fabrics.com": "Fariad",
+            "K.Moonesawmy@tropicknits.com": "Kevin",
+            "CPOINEN@tropicknits.com": "Poinen",
+            "JADAM@tropicknits.com": "Jean Michel/Nazeem",
+            "mgoorvadoo@tropicknits.com": "Jean Michel/Nazeem",
+            "RKISOONA@tropicknits.com": "Reena",
+            "AMungly@tropicknits.com": "Asharf.M",
+            "K.Iswardeo@tropicknits.com": "Kirpal",
+            "mcseeburn@tropicknits.com": "Seeburn"
+        };
+
+        function getLoggedInUser() {
+            try {
+                const user = JSON.parse(localStorage.getItem(REMEMBERED_USER_KEY) || 'null');
+                return user || { email: "guest@example.com", name: "Guest User" };
+            } catch (e) {
+                return { email: "guest@example.com", name: "Guest User" };
+            }
+        }
+
+        function getUserRole(email) {
+            if (email === ADMIN_EMAIL) return "ADMIN";
+            if (STAKEHOLDER_MAP[email]) return "STAKEHOLDER";
+            return "REPORTER";
+        }
+
+        function initUserProfile() {
+            const user = getLoggedInUser();
+            const role = getUserRole(user.email);
+
+            const nameEl = document.getElementById('popupName');
+            const emailEl = document.getElementById('popupEmail');
+            const roleEl = document.getElementById('popupRole');
+            const avatarImg = document.getElementById('userAvatar');
+            const popupAvatarImg = document.getElementById('popupAvatar');
+
+            if (nameEl) nameEl.textContent = user.name || user.username || user.loginId || "Unknown User";
+            if (emailEl) emailEl.textContent = user.email || user.loginId || "guest@example.com";
+            if (roleEl) roleEl.textContent = role;
+
+            const initials = (user.name || user.username || user.loginId || "G").split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=6366f1&color=fff&bold=true`;
+
+            if (avatarImg) avatarImg.src = avatarUrl;
+            if (popupAvatarImg) popupAvatarImg.src = avatarUrl;
+
+            const profileBtn = document.getElementById('userAvatar');
+            const popup = document.getElementById('profilePopup');
+
+            if (profileBtn && popup) {
+                profileBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    popup.classList.toggle('visible');
+                };
+            }
+
+            const signOutBtn = document.getElementById('signOutBtn');
+            if (signOutBtn) {
+                signOutBtn.onclick = () => {
+                    if (confirm('Are you sure you want to sign out?')) {
+                        localStorage.removeItem(REMEMBERED_USER_KEY);
+                        window.location.href = LOGIN_PAGE_URL;
+                    }
+                };
+            }
+
+            document.addEventListener('click', (e) => {
+                if (popup && popup.classList.contains('visible') && !popup.contains(e.target) && e.target !== profileBtn) {
+                    popup.classList.remove('visible');
+                }
+            });
+        }
 
         // Données par défaut
         const DEFAULT_DATA = {
@@ -1320,7 +1600,7 @@
         let selectedPLs = [];
         let selectedAccessories = [];
         let selectedAttendees = [];
-        let selectedCadFile = null;
+        let selectedCadFiles = [];
         let lastCNumberFromSheet = null;
         let isSubmitting = false; // Sécurité anti-double clic et multi-utilisateur
 
@@ -1330,22 +1610,23 @@
         let calCurrentDate = new Date();
 
         document.addEventListener("DOMContentLoaded", async () => {
+            initUserProfile();
             setupNavigation();
             await loadCloudData();
             setupCNumber();
             setupCadAttachment();
             setupNoPastDateConstraints();
+            setupCustomerTypeToggle();
 
             setupCombobox('combo-customer', 'customer');
             setupCombobox('combo-department', 'department');
             setupCombobox('combo-season', 'season');
-            setupCombobox('combo-cdl', 'cdlfabric');
+            setupFabricAddOnsTable();
 
             setupPLCombobox('combo-pl', 'pl');
             setupAccessoryCombobox('combo-accessory', 'accessory');
             setupAttendeesCombobox('combo-attendees', 'pl');
 
-            setupTabs("fabric-tabs", "fabric-cdl-container", "fabric-external-container");
             setupMeetingTabs();
         });
 
@@ -1364,6 +1645,123 @@
             });
         }
 
+        function setupCustomerTypeToggle() {
+            const customerTypeSelect = document.getElementById("customer-type");
+            const internalGroup = document.getElementById("internal-customer-group");
+            const pipelineGroup = document.getElementById("pipeline-customer-group");
+            const internalCustomerInput = document.querySelector('#combo-customer input[name="Customer"]');
+            const pipelineCustomerInput = document.getElementById("pipeline-customer-input");
+            if (!customerTypeSelect || !internalGroup || !pipelineGroup || !internalCustomerInput || !pipelineCustomerInput) return;
+
+            const syncVisibility = () => {
+                const selectedType = customerTypeSelect.value;
+                const isInternal = selectedType === "INTERNAL";
+                const isPipeline = selectedType === "PIPELINE";
+
+                internalGroup.style.display = isInternal ? "flex" : "none";
+                pipelineGroup.style.display = isPipeline ? "flex" : "none";
+
+                internalCustomerInput.required = isInternal;
+                pipelineCustomerInput.required = isPipeline;
+
+                if (!isInternal) internalCustomerInput.value = "";
+                if (!isPipeline) pipelineCustomerInput.value = "";
+            };
+
+            customerTypeSelect.addEventListener("change", syncVisibility);
+            syncVisibility();
+        }
+
+        function setupFabricAddOnsTable() {
+            const tableBody = document.getElementById("fabric-table-body");
+            const addBtn = document.getElementById("add-fabric-row-btn");
+            const typeSelect = document.getElementById("fabric-type-select");
+            const section = document.getElementById("fabric-addons-section");
+            if (!tableBody || !addBtn || !typeSelect || !section) return;
+            const maxFabricRows = 7;
+            const optLabels = ["A", "B", "C", "D", "E", "F", "G"];
+
+            const createTypeOptions = (selectedValue = "") => {
+                return `
+                    <option value="">Select...</option>
+                    <option value="CDL" ${selectedValue === "CDL" ? "selected" : ""}>CDL</option>
+                    <option value="External" ${selectedValue === "External" ? "selected" : ""}>External</option>
+                `;
+            };
+
+            const refreshOptLabels = () => {
+                const rows = tableBody.querySelectorAll("tr");
+                rows.forEach((row, index) => {
+                    const chip = row.querySelector(".fabric-opt-chip");
+                    if (chip) chip.textContent = optLabels[index] || "";
+                });
+                addBtn.disabled = rows.length >= maxFabricRows;
+            };
+
+            const addRow = (prefillType = "") => {
+                if (tableBody.children.length >= maxFabricRows) {
+                    return;
+                }
+                const row = document.createElement("tr");
+                const rowType = prefillType || typeSelect.value || "";
+                const optLabel = optLabels[tableBody.children.length] || "";
+                row.innerHTML = `
+                    <td><span class="fabric-opt-chip">${optLabel}</span></td>
+                    <td><select class="fabric-row-type">${createTypeOptions(rowType)}</select></td>
+                    <td><input type="text" class="fabric-row-fabric" placeholder="Fabric"></td>
+                    <td><input type="text" class="fabric-row-header" placeholder="Header"></td>
+                    <td><input type="text" class="fabric-row-gms" placeholder="GMs"></td>
+                    <td><input type="text" class="fabric-row-composition" placeholder="Composition"></td>
+                    <td><input type="text" class="fabric-row-width" placeholder="Width"></td>
+                    <td><button type="button" class="fabric-row-remove-btn" title="Remove row">x</button></td>
+                `;
+                const removeBtn = row.querySelector(".fabric-row-remove-btn");
+                if (removeBtn) {
+                    removeBtn.addEventListener("click", () => {
+                        row.remove();
+                        refreshOptLabels();
+                    });
+                }
+                tableBody.appendChild(row);
+                refreshOptLabels();
+            };
+
+            addBtn.addEventListener("click", () => {
+                if (tableBody.children.length >= maxFabricRows) return;
+                addRow(typeSelect.value);
+            });
+            typeSelect.addEventListener("change", () => {
+                section.style.display = typeSelect.value ? "block" : "none";
+                const rows = tableBody.querySelectorAll("tr");
+                rows.forEach((row) => {
+                    const rowTypeSelect = row.querySelector(".fabric-row-type");
+                    if (rowTypeSelect && !rowTypeSelect.value) {
+                        rowTypeSelect.value = typeSelect.value || "";
+                    }
+                });
+            });
+
+            addRow();
+            refreshOptLabels();
+            section.style.display = typeSelect.value ? "block" : "none";
+        }
+
+        function collectFabricRows() {
+            const tableBody = document.getElementById("fabric-table-body");
+            if (!tableBody) return [];
+            const rows = Array.from(tableBody.querySelectorAll("tr"));
+            return rows
+                .map((row) => ({
+                    type: row.querySelector(".fabric-row-type")?.value?.trim() || "",
+                    fabric: row.querySelector(".fabric-row-fabric")?.value?.trim() || "",
+                    header: row.querySelector(".fabric-row-header")?.value?.trim() || "",
+                    gms: row.querySelector(".fabric-row-gms")?.value?.trim() || "",
+                    composition: row.querySelector(".fabric-row-composition")?.value?.trim() || "",
+                    width: row.querySelector(".fabric-row-width")?.value?.trim() || ""
+                }))
+                .filter((item) => item.type || item.fabric || item.header || item.gms || item.composition || item.width);
+        }
+
         function setupCadAttachment() {
             const uploadZone = document.getElementById("upload-zone");
             const fileInput = document.getElementById("cad-file");
@@ -1372,37 +1770,62 @@
             const uploadSubtext = document.getElementById("upload-subtext");
             if (!uploadZone || !fileInput || !urlInput || !uploadLabel || !uploadSubtext) return;
 
-            const defaultLabel = "Click to upload CAD file";
+            const defaultLabel = "Click to upload CAD files";
             const maxCadFileMb = 50;
-            const defaultSubtext = `DXF, DWG or PDF (Max ${maxCadFileMb}MB)`;
+            const defaultSubtext = `DXF, DWG or PDF (Max ${maxCadFileMb}MB each)`;
 
-            const setFromFile = (file) => {
-                if (!file) {
-                    selectedCadFile = null;
-                    uploadLabel.innerText = defaultLabel;
-                    uploadSubtext.innerText = defaultSubtext;
+            const mergeFiles = (currentFiles, incomingFiles) => {
+                const mergedMap = new Map();
+                [...currentFiles, ...incomingFiles].forEach((file) => {
+                    if (!file) return;
+                    const key = `${file.name}__${file.size}__${file.lastModified}`;
+                    if (!mergedMap.has(key)) mergedMap.set(key, file);
+                });
+                return Array.from(mergedMap.values());
+            };
+
+            const setFromFiles = (files, { append = false } = {}) => {
+                const incomingFiles = Array.from(files || []);
+                if (!incomingFiles.length) {
+                    if (!append) {
+                        selectedCadFiles = [];
+                        uploadLabel.innerText = defaultLabel;
+                        uploadSubtext.innerText = defaultSubtext;
+                    }
                     return true;
                 }
+                const filesToValidate = append ? mergeFiles(selectedCadFiles, incomingFiles) : incomingFiles;
                 const maxBytes = maxCadFileMb * 1024 * 1024;
-                if (file.size > maxBytes) {
-                    selectedCadFile = null;
+                const oversizedFile = filesToValidate.find((file) => file.size > maxBytes);
+                if (oversizedFile) {
+                    selectedCadFiles = append ? selectedCadFiles : [];
                     uploadLabel.innerText = "File too large";
-                    uploadSubtext.innerText = `Maximum size is ${maxCadFileMb}MB.`;
+                    uploadSubtext.innerText = `${oversizedFile.name}: max ${maxCadFileMb}MB.`;
                     fileInput.value = "";
                     return false;
                 }
 
                 const allowedExt = new Set(["dxf", "dwg", "pdf", "zip"]);
-                const parts = String(file.name || "").split(".");
-                const fileExt = parts.length > 1 ? parts.pop().toLowerCase() : "";
-                const extOk = !fileExt || allowedExt.has(fileExt);
-                const mimeOk = !file.type || /(pdf|autocad|cad|dwg|dxf|zip)/i.test(file.type);
+                let hasUnrecognizedType = false;
+                for (const file of filesToValidate) {
+                    const parts = String(file.name || "").split(".");
+                    const fileExt = parts.length > 1 ? parts.pop().toLowerCase() : "";
+                    const extOk = !fileExt || allowedExt.has(fileExt);
+                    const mimeOk = !file.type || /(pdf|autocad|cad|dwg|dxf|zip)/i.test(file.type);
+                    if (!extOk && !mimeOk) hasUnrecognizedType = true;
+                }
 
-                uploadLabel.innerText = "Selected: " + file.name;
-                uploadSubtext.innerText = extOk || mimeOk
-                    ? "File ready for upload"
-                    : "Unrecognized type, but upload will continue";
-                selectedCadFile = file;
+                const preview = filesToValidate
+                    .slice(0, 2)
+                    .map((file) => file.name)
+                    .join(", ");
+                const moreCount = Math.max(0, filesToValidate.length - 2);
+
+                uploadLabel.innerText = `${filesToValidate.length} file(s) selected`;
+                uploadSubtext.innerText = hasUnrecognizedType
+                    ? "Some files have unrecognized type, but upload will continue"
+                    : (preview ? `${preview}${moreCount > 0 ? ` +${moreCount} more` : ""}` : "Files ready for upload");
+                selectedCadFiles = filesToValidate;
                 return true;
             };
 
@@ -1412,9 +1835,9 @@
             });
 
             fileInput.addEventListener("change", () => {
-                const file = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
-                const ok = setFromFile(file);
-                if (ok && file) urlInput.value = "";
+                const ok = setFromFiles(fileInput.files, { append: true });
+                if (ok && fileInput.files && fileInput.files.length > 0) urlInput.value = "";
+                fileInput.value = "";
             });
 
             const preventDefaults = (e) => {
@@ -1437,18 +1860,16 @@
 
             uploadZone.addEventListener("drop", (e) => {
                 const droppedFiles = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files : null;
-                const file = droppedFiles && droppedFiles.length > 0 ? droppedFiles[0] : null;
-                if (!file) return;
-                const ok = setFromFile(file);
+                if (!droppedFiles || droppedFiles.length === 0) return;
+                const ok = setFromFiles(droppedFiles, { append: true });
                 if (!ok) return;
-                // Keep dropped file in memory for submit (safer than forcing fileInput.files across browsers).
                 urlInput.value = "";
             });
 
             urlInput.addEventListener("input", () => {
                 const urlValue = urlInput.value.trim();
                 if (!urlValue) return;
-                selectedCadFile = null;
+                selectedCadFiles = [];
                 fileInput.value = "";
                 uploadLabel.innerText = "CAD URL added";
                 uploadSubtext.innerText = "Link will be saved as attachment";
@@ -1458,7 +1879,7 @@
                 setTimeout(() => {
                     const pasted = urlInput.value.trim();
                     if (!pasted) return;
-                    selectedCadFile = null;
+                    selectedCadFiles = [];
                     fileInput.value = "";
                     uploadLabel.innerText = "CAD URL added";
                     uploadSubtext.innerText = "Link pasted successfully";
@@ -1475,7 +1896,7 @@
             const calendarSection = document.getElementById("calendar-section");
             const footer = document.getElementById("main-footer");
 
-            if (navNewRequest && navCalendar) {
+            if(navNewRequest && navCalendar) {
                 navNewRequest.addEventListener("click", (e) => {
                     e.preventDefault();
                     navNewRequest.classList.add("active");
@@ -1493,14 +1914,14 @@
                     footer.style.display = "none";
                     calendarSection.style.display = "block";
 
-                    if (!calendarLoaded) {
+                    if(!calendarLoaded) {
                         await fetchCalendarData();
                     } else {
                         renderCalendar();
                     }
                 });
             }
-
+            
             // Buttons calendar
             document.getElementById('cal-prev-btn')?.addEventListener('click', () => {
                 calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
@@ -1551,7 +1972,7 @@
                 // Fetching all rows via the standard techpack GET endpoint
                 const response = await fetch(APPS_SCRIPT_URL);
                 const data = await response.json();
-                if (data && !data.error) {
+                if(data && !data.error) {
                     requestsRows = data;
                     calendarLoaded = true;
                     renderCalendar();
@@ -1580,7 +2001,7 @@
             let monthTotal = 0;
             requestsRows.forEach(row => {
                 // Determine calendar plot date (using requested date or created date)
-                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate;
+                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate; 
                 const d = globalParseSheetDate(dateRaw);
                 if (d && !isNaN(d)) {
                     if (d.getFullYear() === year && d.getMonth() === month) {
@@ -1635,7 +2056,7 @@
 
                     countBadge.addEventListener('click', () => {
                         const dailyReqs = requestsRows.filter(r => {
-                            const dateRaw = r.Created || r.createdDate || r.Requested_Date || r.requestedDate;
+                            const dateRaw = r.Created || r.createdDate || r.Requested_Date || r.requestedDate; 
                             const rd = globalParseSheetDate(dateRaw);
                             return rd && !isNaN(rd) && rd.getFullYear() === year && rd.getMonth() === month && rd.getDate() === i;
                         });
@@ -1746,30 +2167,8 @@
         // --- LOGIQUE ID ---
 
         function setupCNumber() {
-            // const year = new Date().getFullYear();
-            // let nextCounter = 0;
-
-            // if (lastCNumberFromSheet) {
-            //     const match = lastCNumberFromSheet.match(/C\d{4}(\d{5})/);
-            //     if (match && match[1]) {
-            //         nextCounter = parseInt(match[1]) + 1;
-            //     }
-            // } else {
-            //     nextCounter = parseInt(localStorage.getItem('c_number_counter') || "0");
-            // }
-
-            // const formattedCounter = String(nextCounter).padStart(5, '0');
-            const displayId = document.getElementById("display-id");
-            // if (displayId) {
-            //     displayId.innerText = `C${year}${formattedCounter}-01`;
-            // }
             displayId.innerText = "Auto-generated after submission";
         }
-
-        // function incrementCNumberLocally() {
-        //     let current = parseInt(localStorage.getItem('c_number_counter') || "0");
-        //     localStorage.setItem('c_number_counter', (current + 1).toString());
-        // }
 
         // --- GESTION COMBOBOX ---
 
@@ -1875,7 +2274,6 @@
                 });
             };
 
-            // NOUVEAU : Permettre l'ajout manuel d'un nom de PL
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -1984,13 +2382,11 @@
                 });
             };
 
-            // NOUVEAU : Gestion de l'ajout manuel par la touche Entrée ou Virgule
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ',') {
                     e.preventDefault();
                     const val = input.value.trim().replace(',', '');
                     if (val && val.includes('@')) {
-                        // On ajoute l'email directement comme nom et email
                         addAttendeeTag(val, val);
                         input.value = '';
                         dropdown.style.display = 'none';
@@ -2003,7 +2399,7 @@
             input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
         }
 
-        function addAttendeeTag(name, email) { if (!selectedAttendees.some(a => a.email === email)) { selectedAttendees.push({ name, email }); renderAttendeeTags(); } }
+        function addAttendeeTag(name, email) { if (!selectedAttendees.some(a => a.email.toLowerCase() === email.toLowerCase())) { selectedAttendees.push({ name, email }); renderAttendeeTags(); } }
         function renderAttendeeTags() {
             const container = document.getElementById("attendees-tags");
             if (!container) return;
@@ -2018,21 +2414,6 @@
         }
         window.removeAttendee = (index) => { selectedAttendees.splice(index, 1); renderAttendeeTags(); };
 
-        function setupTabs(tabGroupId, containerAId, containerBId) {
-            const group = document.getElementById(tabGroupId);
-            if (!group) return;
-            const btns = group.querySelectorAll('.tab-btn');
-            btns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    btns.forEach(b => b.classList.remove('active'));
-                    e.currentTarget.classList.add('active');
-                    const isA = e.currentTarget.dataset.target === containerAId || e.currentTarget.dataset.target.includes('cdl');
-                    document.getElementById(containerAId).style.display = isA ? "block" : "none";
-                    document.getElementById(containerBId).style.display = isA ? "none" : "block";
-                });
-            });
-        }
-
         function setupMeetingTabs() {
             const btns = document.querySelectorAll('#meeting-tabs .tab-btn');
             const statusInput = document.getElementById("dynamic-status-input");
@@ -2040,8 +2421,6 @@
 
             btns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    // 1. Gestion visuelle des boutons (Tabs)
-                    btns.forEach(b => b.classList.remove('active'));
                     e.currentTarget.classList.add('active');
 
                     // 2. Basculement des conteneurs
@@ -2114,23 +2493,48 @@
                 // 2. Préparation des données si pas de conflit
                 statusText.innerText = "Sending data...";
                 const formData = new FormData(form);
-                let fileData = null;
+                let filesData = [];
                 const fileInput = document.getElementById("cad-file");
                 const cadUrlInput = document.getElementById("cad-url");
                 const cadUrl = cadUrlInput ? cadUrlInput.value.trim() : "";
-                const fileToUpload = selectedCadFile || (fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null);
-                if (fileToUpload) {
-                    const file = fileToUpload;
-                    fileData = await new Promise(r => {
+                const filesToUpload = selectedCadFiles.length > 0
+                    ? selectedCadFiles
+                    : Array.from(fileInput && fileInput.files ? fileInput.files : []);
+                if (filesToUpload.length > 0) {
+                    filesData = await Promise.all(filesToUpload.map((file) => new Promise((resolve) => {
                         const reader = new FileReader();
-                        reader.onload = (e) => r({ name: file.name, mimeType: file.type, base64: e.target.result.split(',')[1] });
+                        reader.onload = (e) => resolve({
+                            name: file.name,
+                            mimeType: file.type,
+                            base64: e.target.result.split(',')[1]
+                        });
                         reader.readAsDataURL(file);
-                    });
+                    })));
                 }
 
-                const fabricTabs = document.querySelector('#fabric-tabs .active');
-                const isCDL = fabricTabs ? fabricTabs.dataset.target.includes('cdl') : true;
-                const mainFabric = isCDL ? (document.querySelector('#combo-cdl input')?.value || "") : document.getElementById("fabric-external-input").value;
+                const selectedFabricType = document.getElementById("fabric-type-select")?.value || "";
+                const fabricRows = collectFabricRows();
+                if (!selectedFabricType) {
+                    statusText.innerText = "Error: Please select a fabric Type.";
+                    statusText.style.color = "#ef4444";
+                    isSubmitting = false;
+                    btn.classList.remove("btn-loading");
+                    btn.disabled = false;
+                    btn.innerHTML = "Submit Request";
+                    return;
+                }
+                if (fabricRows.length === 0) {
+                    statusText.innerText = "Error: Please add at least one fabric row.";
+                    statusText.style.color = "#ef4444";
+                    isSubmitting = false;
+                    btn.classList.remove("btn-loading");
+                    btn.disabled = false;
+                    btn.innerHTML = "Submit Request";
+                    return;
+                }
+                const firstFabricRow = fabricRows[0];
+                const mainFabric = firstFabricRow.fabric || "";
+                const fabricHeader = firstFabricRow.header || "";
 
                 const activeMeetingBtn = document.querySelector('#meeting-tabs .active');
                 const isBrainstorm = activeMeetingBtn ? (activeMeetingBtn.dataset.target === "meeting-brainstorming") : false;
@@ -2158,9 +2562,9 @@
                 if (pendingEmail && pendingEmail.includes('@') && !finalAttendees.includes(pendingEmail)) {
                     finalAttendees.push(pendingEmail);
                 }
-                // Validation obligatoire des attendees uniquement si brainstorming
+                // Validation obligatoire des attendees uniquement si handing over
                 if (isBrainstorm && finalAttendees.length === 0) {
-                    statusText.innerText = "Error: Please add at least one attendee for Brainstorming.";
+                    statusText.innerText = "Error: Please add at least one attendee for Handing over.";
                     statusText.style.color = "#ef4444";
                     isSubmitting = false; // libère le bouton
                     btn.classList.remove("btn-loading");
@@ -2206,7 +2610,7 @@
                     const todayStart = new Date();
                     todayStart.setHours(0, 0, 0, 0);
                     if (!isNaN(selected.getTime()) && selected < todayStart) {
-                        statusText.innerText = "Error: Costing Ready Date cannot be in the past.";
+                        statusText.innerText = "Error: Costing Expected Date cannot be in the past.";
                         statusText.style.color = "#ef4444";
                         isSubmitting = false;
                         btn.classList.remove("btn-loading");
@@ -2219,7 +2623,11 @@
                 }
 
                 const currentStatus = document.getElementById("dynamic-status-input")?.value || "Pending";
-
+                const customerType = (formData.get("Customer Type") || "").toString().trim();
+                const customerValue = customerType === "PIPELINE"
+                    ? (document.getElementById("pipeline-customer-input")?.value || "").trim()
+                    : (formData.get("Customer") || "").toString().trim();
+                
                 const payload = {
                     // "C_Number": currentIdInUI,
                     "Requested_Date": formatted,
@@ -2227,23 +2635,25 @@
                     "Remarks": formData.get("Remarks") || "",
                     "Block Details": formData.get("Block Details") || "",
                     "Costing Ready Date": formattedRd,
-                    "Customer": formData.get("Customer") || "",
+                    "Customer Type": customerType,
+                    "Customer": customerValue,
                     "Customer Department": formData.get("Customer Department") || "",
                     "Sample Type": formData.get("Sample Type") || "Initial",
                     "TKL Season": formData.get("TKL Season") || "",
                     "Main Fabric": mainFabric,
-                    "Fabric Supplier": isCDL ? "CDL" : "External",
-                    "Fabric Header": isCDL ? (document.getElementById("fabric-cdl-header")?.value || "") : "",
+                    "Fabric Supplier": selectedFabricType,
+                    "Fabric Header": fabricHeader,
+                    "Fabric Add Ons": JSON.stringify(fabricRows),
                     "Status": currentStatus,
-                    "Attachment": fileData ? fileData.name : (cadUrl || "None"),
-                    "cadFileData": fileData,
+                    "Attachment": filesData.length > 0 ? filesData.map((file) => file.name).join(", ") : (cadUrl || "None"),
+                    "cadFileData": filesData.length > 0 ? filesData[0] : null,
+                    "cadFilesData": filesData,
                     "PL_Name": finalPLs.join(", "),
                     "Accessory_Name": finalAccessories.join(", "),
                     "Meeting Date": meetingDate,
                     "Meeting Time": meetingTime,
                     "Meeting Attendees": finalAttendees.join(", "),
-                    "Meeting Notes": meetingNotes,
-                    "appLink": "https://costing-home.vercel.app/"
+                    "Meeting Notes": meetingNotes
                 };
 
                 if (currentStatus === "Awaiting Techpack") {
@@ -2277,7 +2687,7 @@
                 statusText.innerText = "Request sent successfully!";
                 statusText.style.color = "#10b981";
                 alert(successMessage);
-                window.location.href = "https://costing-home.vercel.app/";
+                window.location.href = "https://awaiting-meet.vercel.app/";
 
             } catch (error) {
                 isSubmitting = false;
