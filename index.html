@@ -288,105 +288,6 @@
         object-fit: cover;
     }
 
-    /* User Profile Popup */
-    .profile-popup {
-        position: absolute;
-        top: 70px;
-        right: 24px;
-        width: 280px;
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-        border: 1px solid #f1f5f9;
-        z-index: 2000;
-        display: none;
-        padding: 24px;
-    }
-
-    .profile-popup.visible {
-        display: block;
-        animation: slideDown 0.2s ease-out;
-    }
-
-    @keyframes slideDown {
-        from {
-            transform: translateY(-10px);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-
-    .profile-header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #f1f5f9;
-        margin-bottom: 20px;
-    }
-
-    .profile-avatar-large {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        margin-bottom: 12px;
-        border: 2px solid #eff6ff;
-        object-fit: cover;
-    }
-
-    .profile-name {
-        font-size: 16px;
-        font-weight: 700;
-        color: #0f172a;
-        margin-bottom: 4px;
-    }
-
-    .profile-email {
-        font-size: 13px;
-        color: #64748b;
-    }
-
-    .profile-role-badge {
-        margin-top: 10px;
-        padding: 4px 12px;
-        background: #eff6ff;
-        color: #2563eb;
-        font-size: 11px;
-        font-weight: 600;
-        border-radius: 20px;
-        text-transform: uppercase;
-    }
-
-    .profile-footer {
-        display: flex;
-        justify-content: center;
-    }
-
-    .sign-out-btn {
-        width: 100%;
-        padding: 10px;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        color: #ef4444;
-        font-weight: 600;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .sign-out-btn:hover {
-        background: #fef2f2;
-        border-color: #fca5a5;
-    }
-
     /* Main Container */
     .main-container {
         max-width: 1000px;
@@ -1093,33 +994,17 @@
             <ul class="nav-links">
                 <li><a href="https://costing-home.vercel.app/">Home</a></li>
                 <li><a href="#" id="nav-new-request" class="active">New</a></li>
-                <li><a href="#" id="nav-revised">Revised</a></li>
+                <li><a href="https://revised-costing.vercel.app/" id="nav-revised">Revised</a></li>
                 <li><a href="#" id="nav-calendar">Calendar view</a></li>
             </ul>
         </div>
         <div class="nav-right">
             <div class="search-bar">
                 <i data-feather="search"></i>
-                <input type="text" placeholder="Search Style...">
+                <input type="text" placeholder="Search orders...">
             </div>
             <div class="profile-pic">
-                <img src="https://i.pravatar.cc/150?u=request_user" alt="User Profile" id="userAvatar">
-                <!-- Profile Popup -->
-                <div class="profile-popup" id="profilePopup">
-                    <div class="profile-header">
-                        <img src="https://i.pravatar.cc/150?u=request_user" class="profile-avatar-large"
-                            id="popupAvatar" />
-                        <div class="profile-name" id="popupName">Guest User</div>
-                        <div class="profile-email" id="popupEmail">guest@example.com</div>
-                        <div class="profile-role-badge" id="popupRole">REPORTER</div>
-                    </div>
-                    <div class="profile-footer">
-                        <button class="sign-out-btn" id="signOutBtn">
-                            <i data-feather="log-out" style="width: 14px;"></i>
-                            Sign Out
-                        </button>
-                    </div>
-                </div>
+                <img src="https://ui-avatars.com/api/?name=User&background=ed8936&color=fff" alt="User" />
             </div>
         </div>
     </nav>
@@ -1487,101 +1372,9 @@
     </div>
     <!-- Initialization via Feather Icons -->
     <script>
-        // --- SÉCURITÉ CONNEXION ---
-        const LOGIN_PAGE_URL = "https://costing-app-beta.vercel.app/";
-        const REMEMBERED_USER_KEY = "garmentcost_remembered_user";
+        feather.replace();
 
-        function checkAuth() {
-            const user = localStorage.getItem(REMEMBERED_USER_KEY);
-            if (!user) {
-                window.location.href = LOGIN_PAGE_URL;
-                return false;
-            }
-            return true;
-        }
-        if (!checkAuth()) {
-            // Arrêter l'exécution si non connecté
-            throw new Error("Authentification requise");
-        }
-
-        // --- CONFIGURATION ---
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec";
-
-        // Identity Constants
-        const ADMIN_EMAIL = "tropicfabiosandy@gmail.com";
-        const STAKEHOLDER_MAP = {
-            "fjumoorty@cdl-fabrics.com": "Fariad",
-            "K.Moonesawmy@tropicknits.com": "Kevin",
-            "CPOINEN@tropicknits.com": "Poinen",
-            "JADAM@tropicknits.com": "Jean Michel/Nazeem",
-            "mgoorvadoo@tropicknits.com": "Jean Michel/Nazeem",
-            "RKISOONA@tropicknits.com": "Reena",
-            "AMungly@tropicknits.com": "Asharf.M",
-            "K.Iswardeo@tropicknits.com": "Kirpal",
-            "mcseeburn@tropicknits.com": "Seeburn"
-        };
-
-        function getLoggedInUser() {
-            try {
-                const user = JSON.parse(localStorage.getItem(REMEMBERED_USER_KEY) || 'null');
-                return user || { email: "guest@example.com", name: "Guest User" };
-            } catch (e) {
-                return { email: "guest@example.com", name: "Guest User" };
-            }
-        }
-
-        function getUserRole(email) {
-            if (email === ADMIN_EMAIL) return "ADMIN";
-            if (STAKEHOLDER_MAP[email]) return "STAKEHOLDER";
-            return "REPORTER";
-        }
-
-        function initUserProfile() {
-            const user = getLoggedInUser();
-            const role = getUserRole(user.email);
-
-            const nameEl = document.getElementById('popupName');
-            const emailEl = document.getElementById('popupEmail');
-            const roleEl = document.getElementById('popupRole');
-            const avatarImg = document.getElementById('userAvatar');
-            const popupAvatarImg = document.getElementById('popupAvatar');
-
-            if (nameEl) nameEl.textContent = user.name || user.username || user.loginId || "Unknown User";
-            if (emailEl) emailEl.textContent = user.email || user.loginId || "guest@example.com";
-            if (roleEl) roleEl.textContent = role;
-
-            const initials = (user.name || user.username || user.loginId || "G").split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=6366f1&color=fff&bold=true`;
-
-            if (avatarImg) avatarImg.src = avatarUrl;
-            if (popupAvatarImg) popupAvatarImg.src = avatarUrl;
-
-            const profileBtn = document.getElementById('userAvatar');
-            const popup = document.getElementById('profilePopup');
-
-            if (profileBtn && popup) {
-                profileBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    popup.classList.toggle('visible');
-                };
-            }
-
-            const signOutBtn = document.getElementById('signOutBtn');
-            if (signOutBtn) {
-                signOutBtn.onclick = () => {
-                    if (confirm('Are you sure you want to sign out?')) {
-                        localStorage.removeItem(REMEMBERED_USER_KEY);
-                        window.location.href = LOGIN_PAGE_URL;
-                    }
-                };
-            }
-
-            document.addEventListener('click', (e) => {
-                if (popup && popup.classList.contains('visible') && !popup.contains(e.target) && e.target !== profileBtn) {
-                    popup.classList.remove('visible');
-                }
-            });
-        }
 
         // Données par défaut
         const DEFAULT_DATA = {
@@ -1591,7 +1384,7 @@
             cdlfabric: ["Cotton 100% Jersey", "Polyester Blend 220g", "Denim 12oz"],
             pl: ["Vishal", "Kavita", "Divya", "Niven", "Karishma", "Deepa", "Khoshila", "Gaveena", "Jason", "Khushboo", "Deivayanai", "Dravish", "Bharti", "Yvanof", "Selvanee", "Nazima", "Kevin"],
             plEmails: {},
-            accessory: [],
+            accessory: ["Vishal", "Kavita", "Divya", "Niven", "Karishma", "Deepa"],
             accessoryEmails: {}
         };
 
@@ -1610,7 +1403,6 @@
         let calCurrentDate = new Date();
 
         document.addEventListener("DOMContentLoaded", async () => {
-            initUserProfile();
             setupNavigation();
             await loadCloudData();
             setupCNumber();
@@ -2167,8 +1959,30 @@
         // --- LOGIQUE ID ---
 
         function setupCNumber() {
+            // const year = new Date().getFullYear();
+            // let nextCounter = 0;
+
+            // if (lastCNumberFromSheet) {
+            //     const match = lastCNumberFromSheet.match(/C\d{4}(\d{5})/);
+            //     if (match && match[1]) {
+            //         nextCounter = parseInt(match[1]) + 1;
+            //     }
+            // } else {
+            //     nextCounter = parseInt(localStorage.getItem('c_number_counter') || "0");
+            // }
+
+            // const formattedCounter = String(nextCounter).padStart(5, '0');
+            const displayId = document.getElementById("display-id");
+            // if (displayId) {
+            //     displayId.innerText = `C${year}${formattedCounter}-01`;
+            // }
             displayId.innerText = "Auto-generated after submission";
         }
+
+        // function incrementCNumberLocally() {
+        //     let current = parseInt(localStorage.getItem('c_number_counter') || "0");
+        //     localStorage.setItem('c_number_counter', (current + 1).toString());
+        // }
 
         // --- GESTION COMBOBOX ---
 
@@ -2274,6 +2088,7 @@
                 });
             };
 
+            // NOUVEAU : Permettre l'ajout manuel d'un nom de PL
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -2382,11 +2197,13 @@
                 });
             };
 
+            // NOUVEAU : Gestion de l'ajout manuel par la touche Entrée ou Virgule
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ',') {
                     e.preventDefault();
                     const val = input.value.trim().replace(',', '');
                     if (val && val.includes('@')) {
+                        // On ajoute l'email directement comme nom et email
                         addAttendeeTag(val, val);
                         input.value = '';
                         dropdown.style.display = 'none';
@@ -2399,7 +2216,7 @@
             input.onblur = () => setTimeout(() => dropdown.style.display = 'none', 200);
         }
 
-        function addAttendeeTag(name, email) { if (!selectedAttendees.some(a => a.email.toLowerCase() === email.toLowerCase())) { selectedAttendees.push({ name, email }); renderAttendeeTags(); } }
+        function addAttendeeTag(name, email) { if (!selectedAttendees.some(a => a.email === email)) { selectedAttendees.push({ name, email }); renderAttendeeTags(); } }
         function renderAttendeeTags() {
             const container = document.getElementById("attendees-tags");
             if (!container) return;
@@ -2414,6 +2231,21 @@
         }
         window.removeAttendee = (index) => { selectedAttendees.splice(index, 1); renderAttendeeTags(); };
 
+        function setupTabs(tabGroupId, containerAId, containerBId) {
+            const group = document.getElementById(tabGroupId);
+            if (!group) return;
+            const btns = group.querySelectorAll('.tab-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    btns.forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    const isA = e.currentTarget.dataset.target === containerAId || e.currentTarget.dataset.target.includes('cdl');
+                    document.getElementById(containerAId).style.display = isA ? "block" : "none";
+                    document.getElementById(containerBId).style.display = isA ? "none" : "block";
+                });
+            });
+        }
+
         function setupMeetingTabs() {
             const btns = document.querySelectorAll('#meeting-tabs .tab-btn');
             const statusInput = document.getElementById("dynamic-status-input");
@@ -2421,6 +2253,8 @@
 
             btns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                    // 1. Gestion visuelle des boutons (Tabs)
+                    btns.forEach(b => b.classList.remove('active'));
                     e.currentTarget.classList.add('active');
 
                     // 2. Basculement des conteneurs
