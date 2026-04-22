@@ -2679,7 +2679,8 @@
                     "Attendees": attendeeNames,
                     "Meeting Attendees": attendeeEmails,
                     "Meeting_Notes": meetingNotes,
-                    "Fabric_Add_Ons": JSON.stringify(collectFabricRows())
+                    "Fabric_Add_Ons": JSON.stringify(collectFabricRows()),
+                    "Created_By": (JSON.parse(localStorage.getItem("ACC_REMEMBERED_USER") || "{}")).email || ""
                 };
 
                 if (currentStatus === "Awaiting Techpack") {
