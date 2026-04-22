@@ -2064,32 +2064,36 @@
 
                                     if (rowData) {
                                         const detailsContent = document.getElementById('details-content');
-                                        const displayFields = [
-                                            { label: 'Request ID', value: rowData.id || rowData.C_Number },
-                                            { label: 'Title', value: rowData.title || rowData.Title },
-                                            { label: 'Customer', value: rowData.Customer || rowData.customer },
-                                            { label: 'Dept', value: rowData['Customer Department'] || rowData.Cus_Dept },
-                                            { label: 'Sample Type', value: rowData['Sample Type'] },
-                                            { label: 'Season', value: rowData.TKL_Season || rowData['TKL Season'] || rowData.tklSeason },
-                                            { label: 'Main Fabric', value: rowData.Main_Fabric || rowData['Main Fabric'] || rowData.mainFabric },
-                                            { label: 'PL Name', value: rowData.PL_Name || rowData.assignee },
-                                            { label: 'Accessory', value: rowData.Accessory_Name },
-                                            { label: 'Status', value: rowData.Status || rowData.status },
-                                            { label: 'Created Date', value: formatDateOnly(rowData.Created || rowData.createdDate) }
-                                        ];
+                                        
+                                        // Dynamic field generation: all non-empty fields except technical ones
+                                        const displayFields = Object.entries(rowData)
+                                            .filter(([key, val]) => {
+                                                if (key.startsWith('_') || key === 'raw') return false;
+                                                const strVal = String(val || "").trim();
+                                                return strVal !== "" && strVal !== "N/A" && strVal !== "-";
+                                            })
+                                            .map(([key, val]) => {
+                                                let displayValue = val;
+                                                let label = key.replace(/_/g, ' ');
 
-                                        detailsContent.innerHTML = displayFields.map(field => {
-                                            let displayValue = field.value || '-';
-                                            if (field.label === 'Status') {
-                                                displayValue = `<span class="status-indicator" style="padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">${displayValue}</span>`;
-                                            }
-                                            return `
-                                                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                                                    <span style="font-weight: 500; color: var(--text-muted); width: 120px; flex-shrink: 0;">${field.label}</span>
-                                                    <span style="font-weight: 600; text-align: right; word-break: break-word;">${displayValue}</span>
-                                                </div>
-                                            `;
-                                        }).join('');
+                                                // Special formatting for dates if key implies it or value is date-like
+                                                if (key.toLowerCase().includes('date') || key.toLowerCase().includes('created') || key.toLowerCase().includes('expected')) {
+                                                    displayValue = formatDateOnly(val);
+                                                }
+
+                                                if (key === 'Status' || key === 'status') {
+                                                    displayValue = `<span class="status-indicator" style="padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">${val}</span>`;
+                                                }
+
+                                                return `
+                                                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6; gap: 15px;">
+                                                        <span style="font-weight: 500; color: var(--text-muted); min-width: 140px; flex-shrink: 0;">${label}</span>
+                                                        <span style="font-weight: 600; text-align: right; word-break: break-word;">${displayValue}</span>
+                                                    </div>
+                                                `;
+                                            }).join('');
+
+                                        detailsContent.innerHTML = displayFields;
                                         document.getElementById('details-modal').style.display = 'flex';
                                     }
                                 });
