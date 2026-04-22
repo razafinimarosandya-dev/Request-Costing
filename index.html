@@ -1787,8 +1787,41 @@
 
         // --- GESTION DE SESSION ET PROFIL ---
 
+        function consumeUrlSession() {
+            const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
+            const hash = window.location.hash;
+            const urlParams = new URLSearchParams(window.location.search);
+            const querySession = urlParams.get('session');
+            
+            let encodedData = null;
+            if (hash.startsWith('#session=')) {
+                encodedData = hash.substring(9);
+            } else if (querySession) {
+                encodedData = querySession;
+            }
+
+            if (encodedData) {
+                try {
+                    const decodedData = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+                    if (decodedData && decodedData.loginId) {
+                        localStorage.setItem(REMEMBERED_USER_KEY, JSON.stringify(decodedData));
+                        // Clean up URL
+                        window.history.replaceState(null, null, window.location.pathname);
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Failed to parse session from URL:', e);
+                }
+            }
+            return false;
+        }
+
         function setupUserSession() {
             const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
+            
+            // 0. Essayer de récupérer la session depuis l'URL d'abord
+            consumeUrlSession();
+
             const userAvatar = document.getElementById('user-avatar');
             const dropdownEmail = document.getElementById('dropdown-email');
             const profileTrigger = document.getElementById('profile-trigger');
