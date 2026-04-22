@@ -1374,7 +1374,7 @@
     <script>
         feather.replace();
 
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZ4f9sdtoTb2Ps0E5Q8NX1FV7qhfJXEx-AzazDqZLfsnkfKhV3xqEMBPVGdTYuWh8TSg/exec";
 
         // Données par défaut
         const DEFAULT_DATA = {
@@ -2464,30 +2464,26 @@
                 
                 const payload = {
                     // "C_Number": currentIdInUI,
-                    "Requested_Date": formatted,
-                    "Title": referenceValue,
+                    "Req_Date": formatted,
+                    "Customer_Ref": referenceValue,
                     "Remarks": formData.get("Remarks") || "",
-                    "Block Details": formData.get("Block Details") || "",
-                    "Costing Ready Date": formattedRd,
-                    "Customer Type": customerType,
+                    "Block_Details": formData.get("Block Details") || "",
+                    "Costing_Expected_Date": formattedRd,
+                    "Customer_Type": customerType,
                     "Customer": customerValue,
-                    "Customer Department": formData.get("Customer Department") || "",
-                    "Sample Type": formData.get("Sample Type") || "Initial",
-                    "TKL Season": formData.get("TKL Season") || "",
-                    "Main Fabric": mainFabric,
-                    "Fabric Supplier": selectedFabricType,
-                    "Fabric Header": fabricHeader,
-                    "Fabric Add Ons": JSON.stringify(fabricRows),
+                    "Customer_Department": formData.get("Customer Department") || "",
+                    "Sample_Type": formData.get("Sample Type") || "Initial",
+                    "Season": formData.get("TKL Season") || "",
                     "Status": currentStatus,
-                    "Attachment": filesData.length > 0 ? filesData.map((file) => file.name).join(", ") : (cadUrl || "None"),
+                    "Attachments": filesData.length > 0 ? filesData.map((file) => file.name).join(", ") : (cadUrl || "None"),
                     "cadFileData": filesData.length > 0 ? filesData[0] : null,
                     "cadFilesData": filesData,
                     "PL_Name": finalPLs.join(", "),
-                    "Accessory_Name": finalAccessories.join(", "),
+                    "Acc_Name": finalAccessories.join(", "),
                     "Meeting Date": meetingDate,
-                    "Meeting Time": meetingTime,
+                    "Meeting_Time": meetingTime,
                     "Meeting Attendees": finalAttendees.join(", "),
-                    "Meeting Notes": meetingNotes
+                    "Meeting_Notes": meetingNotes
                 };
 
                 if (currentStatus === "Awaiting Techpack") {
