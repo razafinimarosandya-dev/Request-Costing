@@ -2464,6 +2464,7 @@
                 
                 const plEmails = finalPLs.map(name => CLOUD_DATA.plEmails[name] || (name.includes("@") ? name : "")).filter(Boolean);
                 const accEmails = finalAccessories.map(name => (CLOUD_DATA.accessoryEmails && CLOUD_DATA.accessoryEmails[name]) || (name.includes("@") ? name : "")).filter(Boolean);
+                const attendeeEmails = selectedAttendees.map(a => a.email).join(", ");
                 const attendeeNames = selectedAttendees.map(a => a.name).join(", ");
 
                 const payload = {
@@ -2490,6 +2491,7 @@
                     "Meeting_Time": meetingTime,
                     "Meeting_Type": isBrainstorm ? "Handing over" : "Direct",
                     "Attendees": attendeeNames,
+                    "Meeting Attendees": attendeeEmails,
                     "Meeting_Notes": meetingNotes,
                     "Fabric_Add_Ons": JSON.stringify(collectFabricRows())
                 };
