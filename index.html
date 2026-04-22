@@ -2462,11 +2462,15 @@
                     ? (document.getElementById("pipeline-customer-input")?.value || "").trim()
                     : (formData.get("Customer") || "").toString().trim();
                 
+                const plEmails = finalPLs.map(name => CLOUD_DATA.plEmails[name] || (name.includes("@") ? name : "")).filter(Boolean);
+                const accEmails = finalAccessories.map(name => (CLOUD_DATA.accessoryEmails && CLOUD_DATA.accessoryEmails[name]) || (name.includes("@") ? name : "")).filter(Boolean);
+                const attendeeNames = selectedAttendees.map(a => a.name).join(", ");
+
                 const payload = {
                     // "C_Number": currentIdInUI,
                     "Req_Date": formatted,
                     "Customer_Ref": referenceValue,
-                    "Remarks": formData.get("Remarks") || "",
+                    "Req_Remarks": formData.get("Remarks") || "",
                     "Block_Details": formData.get("Block Details") || "",
                     "Costing_Expected_Date": formattedRd,
                     "Customer_Type": customerType,
@@ -2479,11 +2483,14 @@
                     "cadFileData": filesData.length > 0 ? filesData[0] : null,
                     "cadFilesData": filesData,
                     "PL_Name": finalPLs.join(", "),
+                    "PL_Mail": plEmails.join(", "),
                     "Acc_Name": finalAccessories.join(", "),
+                    "Acc_Email": accEmails.join(", "),
                     "Meeting Date": meetingDate,
                     "Meeting_Time": meetingTime,
-                    "Meeting Attendees": finalAttendees.join(", "),
-                    "Meeting_Notes": meetingNotes
+                    "Attendees": attendeeNames,
+                    "Meeting_Notes": meetingNotes,
+                    "Fabric_Add_Ons": JSON.stringify(collectFabricRows())
                 };
 
                 if (currentStatus === "Awaiting Techpack") {
