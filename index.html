@@ -1060,14 +1060,136 @@
         height: 16px;
     }
 
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
+    /* Redesigned Modal/Details (Meeting Style) */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
 
-        100% {
-            transform: rotate(360deg);
-        }
+    .detail-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+    .detail-card:hover {
+        border-color: #cbd5e1;
+        background: #f1f5f9;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .detail-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: capitalize;
+        letter-spacing: 0.01em;
+        margin-bottom: 2px;
+    }
+
+    .detail-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+        word-break: break-word;
+    }
+
+    .status-pill {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        display: inline-block;
+        letter-spacing: 0.02em;
+    }
+
+    .status-pill.awaiting-techpack { background: #fef9c3; color: #854d0e; }
+    .status-pill.awaiting-pattern { background: #dcfce7; color: #166534; }
+    .status-pill.awaiting-meeting { background: #eff6ff; color: #1e40af; }
+    .status-pill.complete { background: #f1f5f9; color: #475569; }
+    .status-pill.cancel { background: #fee2e2; color: #991b1b; }
+
+    /* Modal System Override */
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(4px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        padding: 20px;
+    }
+
+    .modal-window {
+        background: white;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 800px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: modalSlide 0.3s ease-out;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .modal-close {
+        background: #f1f5f9;
+        border: none;
+        border-radius: 8px;
+        padding: 8px;
+        line-height: 1;
+        cursor: pointer;
+        color: #64748b;
+        transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        background: white;
+    }
+
+    @keyframes modalSlide {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
 </style>
@@ -1428,32 +1550,27 @@
     </main>
 
     <!-- Calendar Day Requests Modal -->
-    <div class="modal" id="calendar-day-modal"
-      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-      <div class="card"
-        style="width: 400px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
-        <h3 id="calendar-day-title" style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-          Requests for Date</h3>
-        <div id="calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
-          <!-- Populated via JS -->
+    <div class="modal-backdrop" id="calendar-day-modal">
+      <div class="modal-window" style="max-width: 500px;">
+        <div class="modal-header">
+           <h3 class="modal-title" id="calendar-day-title">Requests for Date</h3>
+           <button class="modal-close" id="close-calendar-day-btn">&times;</button>
         </div>
-        <div style="display: flex; justify-content: flex-end;">
-          <button class="btn-outline-blue" id="close-calendar-day-btn" style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
+        <div class="modal-body" id="calendar-day-content">
+          <!-- Populated via JS -->
         </div>
       </div>
     </div>
 
     <!-- Details Modal -->
-    <div class="modal" id="details-modal"
-      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-      <div class="card"
-        style="width: 500px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
-        <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Request Details</h3>
-        <div id="details-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
-          <!-- Populated via JS -->
+    <div class="modal-backdrop" id="details-modal">
+      <div class="modal-window">
+        <div class="modal-header">
+           <h3 class="modal-title">Request Details</h3>
+           <button class="modal-close" id="close-details-btn">&times;</button>
         </div>
-        <div style="display: flex; justify-content: flex-end;">
-          <button class="btn-outline-blue" id="close-details-btn" style="padding: 8px 16px; background:white; border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">Close</button>
+        <div class="modal-body" id="details-content">
+          <!-- Populated via JS -->
         </div>
       </div>
     </div>
@@ -2047,12 +2164,15 @@
                             title.textContent = `Requests on ${monthNames[month]} ${i}, ${year}`;
 
                             content.innerHTML = dailyReqs.map(r => `
-                                <div style="padding: 10px 8px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                                   <div style="display:flex; flex-direction: column;">
-                                       <span style="font-weight: 500; color: var(--text-main);">${r.id || r.C_Number || 'Unknown ID'}</span>
-                                       <span style="font-size: 12px; color: var(--text-muted);">${r.customer || r.Customer || 'No Customer'}</span>
+                                <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                   <div style="display:flex; flex-direction: column; gap: 2px;">
+                                       <span style="font-weight: 700; color: #1e293b; font-size: 14px;">${r.id || r.C_Number || 'Unknown'}</span>
+                                       <span style="font-size: 12px; color: #64748b;">${r.customer || r.Customer || 'No Customer'}</span>
                                    </div>
-                                   <button class="calendar-details-btn" data-id="${r.id || r.C_Number}" style="padding: 6px 10px; font-size: 12px; background:white; cursor:pointer; border:1px solid var(--border-color); border-radius:4px;">View Details</button>
+                                   <button class="btn-outline-blue calendar-details-btn" data-id="${r.id || r.C_Number}" 
+                                     style="padding: 6px 12px; font-size: 12px; border-radius: 6px; font-weight: 600; border-color: #cbd5e1; color: #475569; background: white; cursor: pointer;">
+                                     Details
+                                   </button>
                                 </div>
                              `).join('');
 
@@ -2064,36 +2184,40 @@
 
                                     if (rowData) {
                                         const detailsContent = document.getElementById('details-content');
-                                        
-                                        // Dynamic field generation: all non-empty fields except technical ones
-                                        const displayFields = Object.entries(rowData)
-                                            .filter(([key, val]) => {
-                                                if (key.startsWith('_') || key === 'raw') return false;
-                                                const strVal = String(val || "").trim();
-                                                return strVal !== "" && strVal !== "N/A" && strVal !== "-";
-                                            })
-                                            .map(([key, val]) => {
-                                                let displayValue = val;
-                                                let label = key.replace(/_/g, ' ');
+                                        const gridContainer = document.createElement('div');
+                                        gridContainer.className = 'form-grid';
 
-                                                // Special formatting for dates if key implies it or value is date-like
-                                                if (key.toLowerCase().includes('date') || key.toLowerCase().includes('created') || key.toLowerCase().includes('expected')) {
-                                                    displayValue = formatDateOnly(val);
-                                                }
+                                        const excludeKeys = ['_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id'].map(k => k.toLowerCase());
 
-                                                if (key === 'Status' || key === 'status') {
-                                                    displayValue = `<span class="status-indicator" style="padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">${val}</span>`;
-                                                }
+                                        Object.entries(rowData).forEach(([key, val]) => {
+                                            const normKey = key.toLowerCase().replace(/[\s_]/g, '');
+                                            if (excludeKeys.includes(normKey)) return;
+                                            const strVal = String(val || "").trim();
+                                            if (strVal === "" || strVal === "N/A" || strVal === "-") return;
 
-                                                return `
-                                                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6; gap: 15px;">
-                                                        <span style="font-weight: 500; color: var(--text-muted); min-width: 140px; flex-shrink: 0;">${label}</span>
-                                                        <span style="font-weight: 600; text-align: right; word-break: break-word;">${displayValue}</span>
-                                                    </div>
-                                                `;
-                                            }).join('');
+                                            let displayValue = val;
+                                            let label = key.replace(/_/g, ' ');
 
-                                        detailsContent.innerHTML = displayFields;
+                                            if (key.toLowerCase().includes('date') || key.toLowerCase().includes('created') || key.toLowerCase().includes('expected')) {
+                                                displayValue = formatDateOnly(val);
+                                            }
+
+                                            if (key.toLowerCase() === 'status') {
+                                                const statusClass = String(val).toLowerCase().replace(/\s+/g, '-');
+                                                displayValue = `<span class="status-pill ${statusClass}">${val}</span>`;
+                                            }
+
+                                            const card = document.createElement('div');
+                                            card.className = 'detail-card';
+                                            card.innerHTML = `
+                                                <span class="detail-label">${label}</span>
+                                                <div class="detail-value">${displayValue}</div>
+                                            `;
+                                            gridContainer.appendChild(card);
+                                        });
+
+                                        detailsContent.innerHTML = '';
+                                        detailsContent.appendChild(gridContainer);
                                         document.getElementById('details-modal').style.display = 'flex';
                                     }
                                 });
