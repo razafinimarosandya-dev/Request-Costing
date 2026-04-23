@@ -2321,11 +2321,11 @@
 
                                         const excludeKeys = [
                                             '_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id',
-                                            'fabricaddons', 'fabric_addons', 'attachmenturl', 'folderpath', 'attachments'
-                                        ].map(k => k.toLowerCase().replace(/[\s_]/g, ''));
+                                            'fabricaddons', 'attachmenturl', 'folderpath', 'attachments', 'attachment'
+                                        ].map(k => k.toLowerCase().replace(/[^a-z]/g, ''));
 
                                         Object.entries(rowData).forEach(([key, val]) => {
-                                            const normKey = key.toLowerCase().replace(/[\s_]/g, '');
+                                            const normKey = key.toLowerCase().replace(/[^a-z]/g, '');
                                             if (excludeKeys.includes(normKey)) return;
                                             const strVal = String(val || "").trim();
                                             if (strVal === "" || strVal === "N/A" || strVal === "-") return;
@@ -2355,22 +2355,26 @@
 
                                         // 3. Append Folder Path at the VERY END
                                         const folderKey = Object.keys(rowData).find(k => {
-                                            const nk = k.toLowerCase().replace(/[\s_]/g, '');
-                                            return nk === 'folderpath' || nk === 'attachmenturl' || nk === 'folderlink' || nk === 'attachments';
+                                            const nk = k.toLowerCase().replace(/[^a-z]/g, '');
+                                            return nk === 'folderpath' || nk === 'attachmenturl' || nk === 'folderlink' || nk === 'attachments' || nk === 'attachment';
                                         });
-                                        if (folderKey && rowData[folderKey]) {
+
+                                        if (folderKey) {
                                             const folderVal = rowData[folderKey];
-                                            if (folderVal && String(folderVal).trim() !== "" && String(folderVal).trim() !== "-") {
+                                            const strVal = String(folderVal || "").trim();
+                                            if (strVal !== "" && strVal !== "-" && strVal !== "N/A") {
                                                 const card = document.createElement('div');
                                                 card.className = "detail-card";
                                                 card.style.gridColumn = "1 / -1";
                                                 card.style.marginTop = "12px";
-                                                let displayVal = folderVal;
-                                                if (String(folderVal).startsWith('http')) {
-                                                    displayVal = `<a href="${folderVal}" target="_blank" style="color: #3b82f6; font-weight: 700; text-decoration: none;">Open Folder</a>`;
+                                                
+                                                let displayVal = strVal;
+                                                if (strVal.startsWith('http')) {
+                                                    displayVal = `<a href="${strVal}" target="_blank" style="color: #3b82f6; font-weight: 700; text-decoration: none;">Open Folder</a>`;
                                                 }
+                                                
                                                 card.innerHTML = `
-                                                    <span class="detail-label">Folder Path</span>
+                                                    <span class="detail-label">Folder Path / Attachments</span>
                                                     <div class="detail-value">${displayVal}</div>
                                                 `;
                                                 detailsContent.appendChild(card);
