@@ -2310,11 +2310,19 @@
                                         const detailsContent = document.getElementById('details-content');
                                         detailsContent.innerHTML = '';
 
-                                        // 1. Dynamic General Details
+                                        // 1. Fabric Details at the top
+                                        const fabricDiv = document.createElement('div');
+                                        detailsContent.appendChild(fabricDiv);
+                                        renderFabricDetails(rowData, fabricDiv);
+
+                                        // 2. Dynamic General Details
                                         const gridContainer = document.createElement('div');
                                         gridContainer.className = 'form-grid';
 
-                                        const excludeKeys = ['_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id', 'fabric add ons', 'fabric_add_ons', 'attachment_url', 'folder_path', 'folder path'].map(k => k.toLowerCase());
+                                        const excludeKeys = [
+                                            '_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id',
+                                            'fabricaddons', 'fabric_addons', 'attachmenturl', 'folderpath', 'attachments'
+                                        ].map(k => k.toLowerCase().replace(/[\s_]/g, ''));
 
                                         Object.entries(rowData).forEach(([key, val]) => {
                                             const normKey = key.toLowerCase().replace(/[\s_]/g, '');
@@ -2345,10 +2353,10 @@
 
                                         detailsContent.appendChild(gridContainer);
 
-                                        // 2. Append Folder Path/Attachment at the VERY END
+                                        // 3. Append Folder Path at the VERY END
                                         const folderKey = Object.keys(rowData).find(k => {
                                             const nk = k.toLowerCase().replace(/[\s_]/g, '');
-                                            return nk === 'folderpath' || nk === 'attachmenturl' || nk === 'folderlink' || nk === 'attachment' || nk === 'attachments';
+                                            return nk === 'folderpath' || nk === 'attachmenturl' || nk === 'folderlink' || nk === 'attachments';
                                         });
                                         if (folderKey && rowData[folderKey]) {
                                             const folderVal = rowData[folderKey];
