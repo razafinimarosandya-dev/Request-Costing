@@ -2353,23 +2353,35 @@
 
                                         detailsContent.appendChild(gridContainer);
 
-                                        // 3. Append Folder Path at the VERY END
-                                        const folderKey = Object.keys(rowData).find(k => {
+                                        // 3. Append Folder Path / Attachments at the VERY END
+                                        // Greedy search for any key that might contain the folder or attachments
+                                        let folderKey = Object.keys(rowData).find(k => {
                                             const nk = k.toLowerCase().replace(/[^a-z]/g, '');
-                                            return nk === 'folderpath' || nk === 'attachmenturl' || nk === 'folderlink' || nk === 'attachments' || nk === 'attachment';
+                                            return nk.includes('folder') || nk.includes('attach');
                                         });
 
-                                        if (folderKey) {
+                                        // Backup: if no specific key is found by name, look for any key that contains an HTTP link
+                                        if (!folderKey) {
+                                            folderKey = Object.keys(rowData).find(k => {
+                                                const val = String(rowData[k] || "");
+                                                return val.toLowerCase().startsWith('http');
+                                            });
+                                        }
+
+                                        if (folderKey && rowData[folderKey]) {
                                             const folderVal = rowData[folderKey];
                                             const strVal = String(folderVal || "").trim();
-                                            if (strVal !== "" && strVal !== "-" && strVal !== "N/A") {
+                                            // Only display if not empty, not just a dash, and not "none"
+                                            if (strVal !== "" && strVal !== "-" && strVal !== "N/A" && strVal.toLowerCase() !== "none") {
                                                 const card = document.createElement('div');
                                                 card.className = "detail-card";
                                                 card.style.gridColumn = "1 / -1";
                                                 card.style.marginTop = "12px";
                                                 
                                                 let displayVal = strVal;
-                                                if (strVal.startsWith('http')) {
+                                                const isLink = strVal.toLowerCase().startsWith('http');
+                                                
+                                                if (isLink) {
                                                     displayVal = `<a href="${strVal}" target="_blank" style="color: #3b82f6; font-weight: 700; text-decoration: none;">Open Folder</a>`;
                                                 }
                                                 
