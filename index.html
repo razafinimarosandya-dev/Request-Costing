@@ -1672,7 +1672,9 @@
             pl: ["Vishal", "Kavita", "Divya", "Niven", "Karishma", "Deepa", "Khoshila", "Gaveena", "Jason", "Khushboo", "Deivayanai", "Dravish", "Bharti", "Yvanof", "Selvanee", "Nazima", "Kevin"],
             plEmails: {},
             accessory: ["Vishal", "Kavita", "Divya", "Niven", "Karishma", "Deepa"],
-            accessoryEmails: {}
+            accessoryEmails: {},
+            officialCustomers: [],
+            customerMapping: {}
         };
 
         // État global
@@ -1697,8 +1699,21 @@
             setupNoPastDateConstraints();
             setupCustomerTypeToggle();
 
-            setupCombobox('combo-customer', 'customer');
-            setupCombobox('combo-department', 'department');
+            setupCombobox('combo-customer', 'customer', {
+                onChange: (val) => {
+                    const deptCombo = document.getElementById('combo-department');
+                    if (deptCombo && typeof deptCombo.refresh === 'function') {
+                        deptCombo.refresh();
+                    }
+                }
+            });
+
+            setupCombobox('combo-department', 'department', {
+                getParentValue: () => {
+                    const custInput = document.querySelector('#combo-customer input[name="Customer"]');
+                    return custInput ? custInput.value.trim() : '';
+                }
+            });
             setupCombobox('combo-season', 'season');
             setupFabricAddOnsTable();
 
@@ -2413,6 +2428,8 @@
                     CLOUD_DATA.plEmails = data.plEmails || {};
                     CLOUD_DATA.accessory = data.accessory || DEFAULT_DATA.accessory;
                     CLOUD_DATA.accessoryEmails = data.accessoryEmails || {};
+                    CLOUD_DATA.officialCustomers = data.officialCustomers || [];
+                    CLOUD_DATA.customerMapping = data.customerMapping || {};
                     lastCNumberFromSheet = data.lastCNumber || null;
                 }
             } catch (error) {
@@ -2420,25 +2437,61 @@
             }
         }
 
-        function getSavedList(key) {
-            const local = localStorage.getItem(`list_${key}`);
-            if (local) return JSON.parse(local);
-            return CLOUD_DATA[key] || DEFAULT_DATA[key] || [];
+        function getSavedList(key, parentValue = '') {
+            // Priority 1: Data from mapping (if department and parent selected)
+            if (key === 'department' && parentValue && CLOUD_DATA.customerMapping && CLOUD_DATA.customerMapping[parentValue]) {
+                const officialSub = CLOUD_DATA.customerMapping[parentValue];
+                const localSub = getLocalDataOnly(`dept_${parentValue}`);
+                return mergeLists(officialSub, localSub);
+            }
+
+            // Priority 2: Official Customers
+            if (key === 'customer' && CLOUD_DATA.officialCustomers && CLOUD_DATA.officialCustomers.length > 0) {
+                const official = CLOUD_DATA.officialCustomers;
+                const local = getLocalDataOnly('customer');
+                return mergeLists(official, local);
+            }
+
+            // Default behavior
+            const official = CLOUD_DATA[key] || DEFAULT_DATA[key] || [];
+            const local = getLocalDataOnly(key);
+            return mergeLists(official, local);
         }
 
-        function localAddSetting(key, value) {
+        function getLocalDataOnly(key) {
+            const local = localStorage.getItem(`list_${key}`);
+            return local ? JSON.parse(local) : [];
+        }
+
+        function mergeLists(official, local) {
+            const set = new Set(official);
+            local.forEach(item => set.add(item));
+            return Array.from(set);
+        }
+
+        function localAddSetting(key, value, parentValue = '') {
             if (!value) return;
-            let currentList = getSavedList(key);
-            if (!currentList.includes(value)) {
-                currentList.push(value);
-                localStorage.setItem(`list_${key}`, JSON.stringify(currentList));
+            const storageKey = (key === 'department' && parentValue) ? `dept_${parentValue}` : key;
+            
+            // Don't add if already in official data
+            const official = (key === 'customer') ? CLOUD_DATA.officialCustomers : 
+                           (key === 'department' && parentValue) ? (CLOUD_DATA.customerMapping[parentValue] || []) :
+                           (CLOUD_DATA[key] || DEFAULT_DATA[key] || []);
+            
+            if (official.includes(value)) return;
+
+            let localList = getLocalDataOnly(storageKey);
+            if (!localList.includes(value)) {
+                localList.push(value);
+                localStorage.setItem(`list_${storageKey}`, JSON.stringify(localList));
             }
         }
 
-        function localRemoveSetting(key, value) {
-            let currentList = getSavedList(key);
-            currentList = currentList.filter(v => v !== value);
-            localStorage.setItem(`list_${key}`, JSON.stringify(currentList));
+        function localRemoveSetting(key, value, parentValue = '') {
+            const storageKey = (key === 'department' && parentValue) ? `dept_${parentValue}` : key;
+            let localList = getLocalDataOnly(storageKey);
+            localList = localList.filter(v => v !== value);
+            localStorage.setItem(`list_${storageKey}`, JSON.stringify(localList));
         }
 
         // --- LOGIQUE ID ---
@@ -2471,46 +2524,60 @@
 
         // --- GESTION COMBOBOX ---
 
-        function setupCombobox(containerId, listKey) {
+        function setupCombobox(containerId, listKey, options = {}) {
             const container = document.getElementById(containerId);
             if (!container) return;
             const input = container.querySelector('input');
             const dropdown = container.querySelector('.combo-dropdown');
 
+            const getParent = () => (typeof options.getParentValue === 'function') ? options.getParentValue() : '';
+
             const addTypedValue = () => {
                 const val = input.value.trim();
                 if (!val) return false;
-                localAddSetting(listKey, val);
+                localAddSetting(listKey, val, getParent());
                 input.value = val;
+                if (typeof options.onChange === 'function') options.onChange(val);
                 return true;
             };
 
             const render = (filter = '') => {
                 dropdown.innerHTML = '';
-                const list = getSavedList(listKey);
+                const list = getSavedList(listKey, getParent());
                 const filtered = list.filter(item => item.toLowerCase().includes(filter.toLowerCase()));
                 const normalizedFilter = filter.trim().toLowerCase();
                 const exactMatchExists = filtered.some(item => item.toLowerCase() === normalizedFilter);
 
+                // Split official vs local for visual distinction if needed, but for now just priority
                 filtered.forEach(item => {
                     const li = document.createElement('li');
                     li.className = 'combo-item';
                     li.style.display = 'flex';
                     li.style.justifyContent = 'space-between';
                     li.style.alignItems = 'center';
+
+                    // Check if official
+                    const isOfficial = (listKey === 'customer') ? (CLOUD_DATA.officialCustomers || []).includes(item) :
+                                       (listKey === 'department') ? (CLOUD_DATA.customerMapping[getParent()] || []).includes(item) :
+                                       (CLOUD_DATA[listKey] || DEFAULT_DATA[listKey] || []).includes(item);
+
                     li.innerHTML = `
-                <span style="flex:1; cursor:pointer;">${item}</span>
-                <span class="delete-btn" style="color:#ef4444; padding:2px 8px; font-weight:bold; cursor:pointer; font-size:1.2rem;">&times;</span>
-            `;
+                        <span style="flex:1; cursor:pointer; ${isOfficial ? 'font-weight:600; color:var(--primary);' : ''}">${item}</span>
+                        ${!isOfficial ? `<span class="delete-btn" style="color:#ef4444; padding:2px 8px; font-weight:bold; cursor:pointer; font-size:1.2rem;">&times;</span>` : '<span style="font-size:0.6rem; color:#94a3b8; font-weight:700;">OFFICIAL</span>'}
+                    `;
                     li.querySelector('span:first-child').onmousedown = () => {
                         input.value = item;
                         dropdown.style.display = 'none';
+                        if (typeof options.onChange === 'function') options.onChange(item);
                     };
-                    li.querySelector('.delete-btn').onmousedown = (e) => {
-                        e.stopPropagation();
-                        localRemoveSetting(listKey, item);
-                        render(input.value);
-                    };
+                    const delBtn = li.querySelector('.delete-btn');
+                    if (delBtn) {
+                        delBtn.onmousedown = (e) => {
+                            e.stopPropagation();
+                            localRemoveSetting(listKey, item, getParent());
+                            render(input.value);
+                        };
+                    }
                     dropdown.appendChild(li);
                 });
 
@@ -2545,9 +2612,12 @@
             input.oninput = () => render(input.value);
             input.onblur = () => {
                 const val = input.value.trim();
-                if (val) localAddSetting(listKey, val);
+                localAddSetting(listKey, val, getParent());
                 setTimeout(() => dropdown.style.display = 'none', 200);
             };
+
+            // Public method to trigger re-render
+            container.refresh = () => render(input.value);
         }
 
         function setupPLCombobox(containerId, listKey) {
