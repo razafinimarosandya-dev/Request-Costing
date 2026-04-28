@@ -1040,21 +1040,42 @@
         margin: 4px 0;
     }
 
-    .sign-out-btn {
+    .dropdown-item {
         width: 100%;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         padding: 10px 16px;
         background: transparent;
         border: none;
         border-radius: 8px;
-        color: #ef4444;
         font-size: 0.9rem;
-        font-weight: 600;
+        font-weight: 500;
+        color: var(--text-main);
         cursor: pointer;
         transition: background 0.2s;
         text-align: left;
+        text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f1f5f9;
+        color: var(--primary);
+    }
+
+    .sign-out-btn {
+        color: #ef4444 !important;
+        font-weight: 600;
+    }
+
+    .sign-out-btn:hover {
+        background-color: #fef2f2 !important;
+    }
+
+    .dropdown-item i {
+        width: 16px;
+        height: 16px;
+        stroke-width: 2.5px;
     }
 
     .sign-out-btn:hover {
@@ -1299,7 +1320,15 @@
                         <span class="user-email" id="dropdown-email">Loading session...</span>
                     </div>
                     <div class="dropdown-divider"></div>
-                    <button type="button" class="sign-out-btn" id="sign-out-btn">
+                    
+                    <a href="#" onclick="redirectTo('https://costing-home.vercel.app/')" class="dropdown-item">
+                        <i data-feather="home"></i>
+                        <span>Dashboard Home</span>
+                    </a>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <button type="button" class="dropdown-item sign-out-btn" id="sign-out-btn">
                         <i data-feather="log-out"></i>
                         <span>Sign Out</span>
                     </button>
