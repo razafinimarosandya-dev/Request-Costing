@@ -2325,36 +2325,27 @@
                                         const detailsContent = document.getElementById('details-content');
                                         detailsContent.innerHTML = '';
 
-                                        // 1. Fabric Details at the top
-                                        const fabricDiv = document.createElement('div');
-                                        detailsContent.appendChild(fabricDiv);
-                                        renderFabricDetails(rowData, fabricDiv);
-
-                                        // 2. Dynamic General Details
+                                        // 1. Dynamic General Details First
                                         const gridContainer = document.createElement('div');
                                         gridContainer.className = 'form-grid';
 
                                         const excludeKeys = [
-                                            '_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id',
-                                            'fabricaddons', 'attachmenturl', 'folderpath', 'attachments', 'attachment'
+                                            '_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id', 'c_number',
+                                            'fabricaddons', 'attachmenturl', 'folderpath', 'attachments', 'attachment', 'status',
+                                            'pl_mail', 'acc_email', 'meeting_notes_brainstorming', 'fabric_origin_source'
                                         ].map(k => k.toLowerCase().replace(/[^a-z]/g, ''));
 
                                         Object.entries(rowData).forEach(([key, val]) => {
                                             const normKey = key.toLowerCase().replace(/[^a-z]/g, '');
                                             if (excludeKeys.includes(normKey)) return;
                                             const strVal = String(val || "").trim();
-                                            if (strVal === "" || strVal === "N/A" || strVal === "-") return;
+                                            if (strVal === "" || strVal === "N/A" || strVal === "-" || strVal.toLowerCase() === "undefined") return;
 
                                             let displayValue = val;
                                             let label = key.replace(/_/g, ' ');
 
                                             if (key.toLowerCase().includes('date') || key.toLowerCase().includes('created') || key.toLowerCase().includes('expected')) {
                                                 displayValue = formatDateOnly(val);
-                                            }
-
-                                            if (key.toLowerCase() === 'status') {
-                                                const statusClass = String(val).toLowerCase().replace(/\s+/g, '-');
-                                                displayValue = `<span class="status-pill ${statusClass}">${val}</span>`;
                                             }
 
                                             const card = document.createElement('div');
@@ -2368,11 +2359,16 @@
 
                                         detailsContent.appendChild(gridContainer);
 
+                                        // 2. Fabric Details below the grid
+                                        const fabricDiv = document.createElement('div');
+                                        fabricDiv.style.marginTop = "24px";
+                                        detailsContent.appendChild(fabricDiv);
+                                        renderFabricDetails(rowData, fabricDiv);
+
                                         // 3. Append Special Fields (Attachments & Folder Path) at the VERY END
-                                        // We find them specifically to show them as full-width cards
                                         const specialFields = [
-                                            { label: 'Folder Path', keys: ['folderpath', 'folderlink'] },
-                                            { label: 'Attachments', keys: ['attachments', 'attachment', 'attachmenturl'] }
+                                            { label: 'Folder Path', keys: ['folderpath', 'folderlink'], color: '#3b82f6', linkText: 'Open Folder' },
+                                            { label: 'Attachments', keys: ['attachments', 'attachment', 'attachmenturl'], color: '#10b981', linkText: 'View Attachment' }
                                         ];
 
                                         specialFields.forEach(spec => {
@@ -2389,14 +2385,19 @@
                                                     card.className = "detail-card";
                                                     card.style.gridColumn = "1 / -1";
                                                     card.style.marginTop = "12px";
+                                                    card.style.background = "#fff";
+                                                    card.style.border = `1.5px solid ${spec.color}20`;
                                                     
                                                     let displayVal = strVal;
                                                     if (strVal.toLowerCase().startsWith('http')) {
-                                                        displayVal = `<a href="${strVal}" target="_blank" style="color: #3b82f6; font-weight: 700; text-decoration: none;">Open Folder</a>`;
+                                                        displayVal = `<a href="${strVal}" target="_blank" style="color: ${spec.color}; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 22 3 22 10"></polyline><line x1="14" y1="11" x2="22" y2="3"></line></svg>
+                                                            ${spec.linkText}
+                                                        </a>`;
                                                     }
                                                     
                                                     card.innerHTML = `
-                                                        <span class="detail-label">${spec.label}</span>
+                                                        <span class="detail-label" style="color: ${spec.color}">${spec.label}</span>
                                                         <div class="detail-value">${displayVal}</div>
                                                     `;
                                                     detailsContent.appendChild(card);
