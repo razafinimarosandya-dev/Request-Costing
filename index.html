@@ -1021,10 +1021,16 @@
         gap: 4px;
     }
 
-    .user-email {
-        font-size: 0.85rem;
-        font-weight: 500;
+    .user-display-name {
+        font-size: 0.95rem;
+        font-weight: 700;
         color: var(--text-main);
+    }
+
+    .user-email {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-muted);
         word-break: break-all;
     }
 
@@ -1289,6 +1295,7 @@
                 <!-- Dropdown Menu -->
                 <div class="user-dropdown" id="user-dropdown">
                     <div class="dropdown-header">
+                        <span class="user-display-name" id="dropdown-name">Welcome</span>
                         <span class="user-email" id="dropdown-email">Loading session...</span>
                     </div>
                     <div class="dropdown-divider"></div>
@@ -2051,14 +2058,17 @@
             const sessionData = JSON.parse(localStorage.getItem(REMEMBERED_USER_KEY) || 'null');
             
             if (sessionData) {
-                const name = sessionData.username || sessionData.loginId || 'User';
-                const email = sessionData.email || sessionData.loginId || 'No email';
+                const name = sessionData.username || sessionData.name || sessionData.loginId || sessionData.loginID || (sessionData.user && (sessionData.user.name || sessionData.user.username)) || 'User';
+                const email = sessionData.email || sessionData.loginId || sessionData.loginID || (sessionData.user && sessionData.user.email) || 'No email';
                 
                 // Mettre à jour l'avatar (initiales)
                 userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=ed8936&color=fff&bold=true`;
                 userAvatar.alt = name;
                 
-                // Mettre à jour l'email dans le menu
+                // Mettre à jour les infos dans le menu
+                if (document.getElementById('dropdown-name')) {
+                    document.getElementById('dropdown-name').textContent = name;
+                }
                 dropdownEmail.textContent = email;
             } else {
                 dropdownEmail.textContent = 'Non connecté';
