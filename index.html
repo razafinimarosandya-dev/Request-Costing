@@ -1270,9 +1270,9 @@
                 <span>GarmentCost</span>
             </div>
             <ul class="nav-links">
-                <li><a href="https://costing-home.vercel.app/">Home</a></li>
+                <li><a href="#" onclick="redirectTo('https://costing-home.vercel.app/')">Home</a></li>
                 <li><a href="#" id="nav-new-request" class="active">New</a></li>
-                <li><a href="https://revised-costing.vercel.app/" id="nav-revised">Revised</a></li>
+                <li><a href="#" onclick="redirectTo('https://revised-costing.vercel.app/')" id="nav-revised">Revised</a></li>
                 <li><a href="#" id="nav-calendar">Calendar view</a></li>
             </ul>
         </div>
@@ -1983,8 +1983,26 @@
         }
 
         // --- NAVBAR TOGGLE & CALENDAR JS ---
-
-        // --- GESTION DE SESSION ET PROFIL ---
+        /**
+         * Cross-domain redirect helper that appends session data to the URL
+         */
+        function redirectTo(url) {
+            if (!url) return;
+            const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
+            const sessionData = localStorage.getItem(REMEMBERED_USER_KEY);
+            if (sessionData) {
+                try {
+                    const encodedSession = btoa(unescape(encodeURIComponent(sessionData)));
+                    const separator = url.includes('?') ? '&' : '?';
+                    window.location.href = `${url}${separator}session=${encodedSession}`;
+                } catch (e) {
+                    console.error('[REDIRECT] Encoding failed:', e);
+                    window.location.href = url;
+                }
+            } else {
+                window.location.href = url;
+            }
+        }
 
         function consumeUrlSession() {
             const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
