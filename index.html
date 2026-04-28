@@ -2332,21 +2332,35 @@
                                         const excludeKeys = [
                                             '_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id', 'c_number',
                                             'fabricaddons', 'attachmenturl', 'folderpath', 'attachments', 'attachment', 'status',
-                                            'pl_mail', 'acc_email', 'meeting_notes_brainstorming', 'fabric_origin_source'
+                                            'pl_mail', 'acc_email', 'meeting_notes_brainstorming', 'fabric_origin_source',
+                                            'pl_name', 'acc_name', 'pm_name', 'cads_name'
                                         ].map(k => k.toLowerCase().replace(/[^a-z]/g, ''));
 
+                                        const displayedLabels = new Set();
+
                                         Object.entries(rowData).forEach(([key, val]) => {
-                                            const normKey = key.toLowerCase().replace(/[^a-z]/g, '');
+                                            // Handle duplicates and exclusions
+                                            const normKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
                                             if (excludeKeys.includes(normKey)) return;
+                                            
+                                            // Create a readable label
+                                            let label = key.replace(/_/g, ' ').trim();
+                                            // Simple normalization of labels to avoid "Req Date" vs "Req_Date" vs "req_date"
+                                            const labelKey = label.toLowerCase().replace(/[^a-z0-9]/g, '');
+                                            
+                                            if (displayedLabels.has(labelKey)) return;
+
                                             const strVal = String(val || "").trim();
-                                            if (strVal === "" || strVal === "N/A" || strVal === "-" || strVal.toLowerCase() === "undefined") return;
+                                            if (strVal === "" || strVal === "N/A" || strVal === "-" || strVal.toLowerCase() === "undefined" || strVal.toLowerCase() === "null") return;
 
                                             let displayValue = val;
-                                            let label = key.replace(/_/g, ' ');
-
                                             if (key.toLowerCase().includes('date') || key.toLowerCase().includes('created') || key.toLowerCase().includes('expected')) {
                                                 displayValue = formatDateOnly(val);
                                             }
+
+                                            // If label corresponds to common duplicates, keep better one
+                                            if (labelKey === 'customerref') label = 'Customer Ref';
+                                            if (labelKey === 'cusdept') label = 'Department';
 
                                             const card = document.createElement('div');
                                             card.className = 'detail-card';
@@ -2355,6 +2369,7 @@
                                                 <div class="detail-value">${displayValue}</div>
                                             `;
                                             gridContainer.appendChild(card);
+                                            displayedLabels.add(labelKey);
                                         });
 
                                         detailsContent.appendChild(gridContainer);
