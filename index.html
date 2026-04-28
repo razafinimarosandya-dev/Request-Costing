@@ -2333,7 +2333,8 @@
                                             '_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id', 'c_number',
                                             'fabricaddons', 'attachmenturl', 'folderpath', 'attachments', 'attachment', 'status',
                                             'pl_mail', 'acc_email', 'meeting_notes_brainstorming', 'fabric_origin_source',
-                                            'pl_name', 'acc_name', 'pm_name', 'cads_name'
+                                            'pl_name', 'acc_name', 'pm_name', 'cads_name', 'style', 'folderlink',
+                                            'req_remarks', 'techpack_remarks', 'pattern_remarks', 'reverse_remarks', 'conso_remarks', 'lateness_remarks'
                                         ].map(k => k.toLowerCase().replace(/[^a-z]/g, ''));
 
                                         const displayedLabels = new Set();
@@ -2373,6 +2374,36 @@
                                         });
 
                                         detailsContent.appendChild(gridContainer);
+
+                                        // 1b. Remarks Section (Full Width, before Fabric)
+                                        const remarksFields = [
+                                            { key: 'Req_Remarks', label: 'Request Remarks' },
+                                            { key: 'Techpack_Remarks', label: 'Techpack Remarks' },
+                                            { key: 'Pattern_Remarks', label: 'Pattern Remarks' },
+                                            { key: 'Reverse_Remarks', label: 'Revert Remarks' },
+                                            { key: 'Conso_Remarks', label: 'Conso Remarks' },
+                                            { key: 'Lateness_Remarks', label: 'Lateness Remarks' }
+                                        ];
+
+                                        remarksFields.forEach(rem => {
+                                            const val = rowData[rem.key] || rowData[rem.key.toLowerCase()];
+                                            const strVal = String(val || "").trim();
+                                            if (strVal && strVal !== "-" && strVal !== "N/A" && strVal.toLowerCase() !== "null") {
+                                                const remCard = document.createElement('div');
+                                                remCard.className = 'detail-card';
+                                                remCard.style.gridColumn = "1 / -1";
+                                                remCard.style.width = "100%";
+                                                remCard.style.marginTop = "8px";
+                                                remCard.style.background = "#fff";
+                                                remCard.style.borderLeft = "4px solid #3b82f6";
+
+                                                remCard.innerHTML = `
+                                                    <span class="detail-label" style="color: #3b82f6;">${rem.label}</span>
+                                                    <div class="detail-value" style="font-weight: 500; white-space: pre-wrap;">${strVal}</div>
+                                                `;
+                                                detailsContent.appendChild(remCard);
+                                            }
+                                        });
 
                                         // 2. Fabric Details below the grid
                                         const fabricDiv = document.createElement('div');
